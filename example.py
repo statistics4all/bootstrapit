@@ -12,65 +12,49 @@ import bootstrapit as bsi
 #==============================================================================
 dataset, order_list = import_spreadsheet('inputrow.xlsx')
 
-#bootstrapping N times
+#bootstrapping configuration
 N = 10000
+bsi.set_number_of_resamples(N)
+bsi.set_folder_export_flag(True)
+bsi.set_file_export_flag(True)
+bsi.set_file_type('xls')
+
+#Hier den Ordnername eingeben anstatt Fibrosis
+bsi.set_folder_name('Fibrosis') 
 
 
+#set group name order for export --> Achtung muss mit den Importnamen im Excellsheet übereinstimmen!!!!
+name_order_list = ['WTY', 'WTSO', 'WTTO', 'WTRO', 'MKOY', 'MKOSO', 'MKOTO', 'MCKY', 'MCKSO', 'MCKTO']
+bsi.set_name_order(name_order_list)
 #==============================================================================
 #  get resample dataset (bootstrap)
 #==============================================================================
-bootstrapped_dataset = get_resampled_datasets(dataset, N)
+bootstrapped_dataset = bsi.get_resampled_datasets(dataset)
 
 
 #==============================================================================
 # get average
 #==============================================================================
-bsi.get_bootstrapped_average( bootstrapped_dataset    , 
-                              number_of_resamples = N , 
-                              csv_export = True       )
+bsi.get_bootstrapped_average( bootstrapped_dataset )
 
 #==============================================================================
 # get relative average
 #==============================================================================
-bsi.get_relative_average( bootstrapped_dataset    , 
-                          number_of_resamples = N , 
-                          reference_name = 'WTY'  ,
-                          csv_export = True       )
+bsi.get_relative_average( bootstrapped_dataset , reference_name = 'WTY' )
 
-#==============================================================================
-# ranking
-#==============================================================================
-bsi.get_ranking( bootstrapped_dataset    , 
-                 number_of_resamples = N , 
-                 csv_export = True       )
 
 #==============================================================================
 # Compare the different mouse groups and compute the probabilites
 #==============================================================================
-bsi.get_comparison_smaller_than( bootstrapped_dataset    , 
-                                 number_of_resamples = N ,  
-                                 csv_export = True       ) 
+bsi.get_comparison_smaller_than( bootstrapped_dataset ) 
 
 
 #==============================================================================
 # Print the probabilites if significant
 #==============================================================================
 
-bsi.get_significant_comparisons( bootstrapped_dataset         , 
-                                  number_of_resamples = N       , 
-                                  significance_threshold = 0.08 ,
-                                  csv_export = True             )
-
-
-
-#==============================================================================
-# Plot Data
-#==============================================================================
-#TODO: Plotting does not work at the moment
-#plot_barchart( mean_ranked_averaged_bootstrapped_dataset , 
-#               significant_comparison_probabilities      , 
-#               plot_order                                )
-
+bsi.get_significant_comparisons( bootstrapped_dataset          ,
+                                 significance_threshold = 0.08 )
 
 
 

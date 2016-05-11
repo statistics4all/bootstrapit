@@ -6,30 +6,53 @@
 import numpy as np
 import scipy as sp
 import scipy.stats as spst
+from scipy import stats
 import matplotlib.pyplot as plt
 import itertools
 import csv
 import xlrd
+import xlwt
 import os
 
+#TODO create a class called bootstrapit with parameters as private attributes
+#TODO create a class called file handling used for import and export of files
+#TODO create a class called plotting for data visualisation
 
 #==============================================================================
 # parameter
 #==============================================================================
-create_folder = False
-directory     = 'bootstrapit_results'
-
+folder_export_flag  = False
+file_export_flag    = False
+directory           = 'bootstrapit_results'
+file_type           = 'csv'
+number_of_resamples = 10000
 #==============================================================================
 # file handling
 #==============================================================================
 
+def set_number_of_resamples(N):
+    global number_of_resamples
+    number_of_resamples = N
+
+def get_number_of_resamples():
+    global number_of_resamples
+    return number_of_resamples
+
 def set_folder_export_flag(export):
-    global create_folder
-    create_folder = export
+    global folder_export_flag
+    folder_export_flag = export
 
 def get_folder_export_flag():
-    global create_folder
-    return create_folder
+    global folder_export_flag
+    return folder_export_flag
+
+def set_file_export_flag(export):
+    global file_export_flag
+    file_export_flag = export
+
+def get_file_export_flag():
+    global file_export_flag
+    return file_export_flag
 
 def set_folder_name(name):
     global directory
@@ -44,8 +67,22 @@ def create_folder():
     global directory
     if not os.path.exists(directory):
         os.makedirs(directory)    
-    
-    
+
+def set_file_type(export):
+    global file_type
+    file_type = export
+
+def get_file_type():
+    global file_type
+    return file_type    
+
+def set_name_order(name_order_list):
+    global name_order
+    name_order = name_order_list
+
+def get_name_order():
+    global name_order
+    return name_order    
     
 def import_spreadsheet(filename):
 
@@ -157,19 +194,180 @@ def parse_csv(filename):
     return row_list
 
 
-def save_dictionary_to_csv(dict, filename):    
+
+def save_dataset_and_sem_to_file(data_dict, sem_dict, function_name):
+    if get_file_type()   == 'csv' :
+        print 'csv file export'
+        filename = '_'.join((get_folder_name(),function_name))
+        save_data_with_sem_to_csv(data_dict, sem_dict, get_name_order(), filename)           
+        
+    elif get_file_type() == 'xls' :
+        print 'xls file export'
+        filename = '_'.join((get_folder_name(),function_name))
+        save_data_with_sem_to_xls(data_dict, sem_dict, get_name_order(), filename)
+        
+    elif get_file_type() == 'xlsx':
+        print 'xlsx file export'
+    else:
+        print 'ERROR: unknown export file type'
+        return -1
+
+
+
+def save_dictionary_to_csv(dict, order_list, filename):
+
+    csv_export_list = []
+    
+    for name in order_list:
+        csv_export_list.append( dict[name] )
+
+
+    #check if there are more than one value in list to export
+    if csv_export_list[0].size > 1:
+        csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+
+
+    with open(filename, 'wb') as f:
+        writer = csv.writer(f)
+        writer.writerow ( order_list       )
+        
+        if csv_export_list[0].size > 1:
+            writer.writerows( csv_export_list )
+        else:
+            writer.writerow ( csv_export_list )
+
+def check_filename_for_slashes(filename):
+    filename = filename.replace('/',' ')
+    return filename
+
+            
+            
+def save_data_with_sem_to_csv(data_dict, sem_dict, order_list, filename):
+
+    csv_export_list     = []
+    csv_sem_export_list = []
+    
+    filename = check_filename_for_slashes(filename)
+    filename = '.'.join((filename,'csv'))    
+    
+    if get_folder_export_flag():
+        create_folder()
+        filename = '/'.join((get_folder_name(), filename))    
+    
+    for name in order_list:
+        csv_export_list.append    ( data_dict[name] )
+        csv_sem_export_list.append( sem_dict[name]  )
+        
+
+    #check if there are more than one value in list to export
+    if csv_export_list[0].size > 1:
+        csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+
+
+    with open(filename, 'wb') as f:
+        writer = csv.writer(f)
+        writer.writerow ( order_list )
+        
+        if csv_export_list[0].size > 1:
+            writer.writerows( csv_export_list )
+        else:
+            writer.writerow ( csv_export_list )
+        
+        writer.writerow(csv_sem_export_list)
+        
+        
+def save_data_with_sem_to_xls(data_dict, sem_dict, order_list, filename):
+
+    csv_export_list     = []
+    csv_sem_export_list = []
+    
+    filename = check_filename_for_slashes(filename)
+    filename = '.'.join((filename,'xls'))    
+    
+    if get_folder_export_flag():
+        create_folder()
+        filename = '/'.join((get_folder_name(), filename))    
+    
+    for name in order_list:
+        csv_export_list.append    ( data_dict[name] )
+        csv_sem_export_list.append( sem_dict[name]  )
+        
+
+    #check if there are more than one value in list to export
+    if csv_export_list[0].size > 1:
+        csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+
+    excell_list = []
+    excell_list.append(order_list)
+    excell_list.append(csv_export_list)
+    excell_list.append(csv_sem_export_list)
+    
+    worksheetname = get_folder_name()
+    worksheetname = check_filename_for_slashes(worksheetname)    
+    
+    book = xlwt.Workbook(encoding="utf-8")
+    sheet = book.add_sheet(worksheetname)
+    for i, l in enumerate(excell_list):
+        for j, col in enumerate(l):
+            sheet.write(i, j, col)
+    
+    book.save(filename)
+
+
+#TODO: integrate in general save storage function
+def save_unordered_dictionary_to_csv(dict, filename):
+    
+    filename = check_filename_for_slashes(filename)
+    filename = '.'.join((filename,'csv'))     
+    filename = '_'.join((get_folder_name(),filename)) 
+    filename = check_filename_for_slashes(filename)
+    
     if get_folder_export_flag():
         create_folder()
         filename = '/'.join((get_folder_name(), filename))
 
     
+    export_list = []
+    for key, value in dict.iteritems():
+        export_list.append([key,value])
+    
+    
     with open(filename, 'wb') as f:
-        w = csv.DictWriter(f, dict.keys())
-        w.writeheader()
-        w.writerow(dict)
+        dw = csv.writer(f)
+        dw.writerows(export_list)
 
+def save_unordered_dictionary_to_xls(dict, filename):
+    
+    filename = check_filename_for_slashes(filename)
+    filename = '.'.join((filename,'xls'))     
+    filename = '_'.join((get_folder_name(),filename)) 
+    filename = check_filename_for_slashes(filename)
+    
+    if get_folder_export_flag():
+        create_folder()
+        filename = '/'.join((get_folder_name(), filename))
 
-def get_bootstrapped_average(bootstrapped_data, number_of_resamples, csv_export = False):
+    
+    export_list = []
+    for key, value in dict.iteritems():
+        export_list.append([key,value])
+    
+    worksheetname = get_folder_name()
+    worksheetname = check_filename_for_slashes(worksheetname)    
+    
+    book = xlwt.Workbook(encoding="utf-8")
+    sheet = book.add_sheet(worksheetname)
+    for i, l in enumerate(export_list):
+        for j, col in enumerate(l):
+            sheet.write(i, j, col)
+    
+    book.save(filename)
+
+#==============================================================================
+# Bootstrapping
+#==============================================================================
+
+def get_bootstrapped_average(bootstrapped_data):
     #bootstrapped_data   = get_resampled_datasets(datasets, number_of_resamples)
     averaged_bootstrapped    = get_average_bootstrapped_data(bootstrapped_data)
     averaged_data            = {}
@@ -177,16 +375,18 @@ def get_bootstrapped_average(bootstrapped_data, number_of_resamples, csv_export 
     for key, values in averaged_bootstrapped.iteritems():
         averaged_data[key]  =  np.mean(values, axis=0)
         
-    if csv_export:
-        save_dictionary_to_csv( averaged_data , 
-                                'bootstrapped_average_results.csv')        
+    standard_error_mean = get_standard_error_of_the_mean(bootstrapped_data)
+    
+    if get_file_export_flag():
+        save_dataset_and_sem_to_file(averaged_data , standard_error_mean, 'bootstrapped_average')
+     
 
-    return averaged_data  
+    return averaged_data, standard_error_mean
 
 
-def get_comparison_smaller_than(bootstrapped_data   , 
-                                number_of_resamples , 
-                                csv_export = False) :
+
+
+def get_comparison_smaller_than(bootstrapped_data):
 
     #get comparison smaller than all permutations
     #bootstrapped_data        = get_resampled_datasets(dataset, number_of_resamples)
@@ -202,19 +402,17 @@ def get_comparison_smaller_than(bootstrapped_data   ,
         
         #compute the probabilities how often the first dataset value is smaller then the second    
         dataset_name_sequence = (p[0][0], p[1][0])    
-        comparison_probabilities[' < '.join(dataset_name_sequence)] = np.float( np.sum( average_comparison ) ) / number_of_resamples
+        comparison_probabilities[' < '.join(dataset_name_sequence)] = np.float( np.sum( average_comparison ) ) / get_number_of_resamples()
 
-    if csv_export:
-        save_dictionary_to_csv(comparison_probabilities, 'comparison_smaller_than_results.csv')            
+    if get_file_export_flag():       
+       save_unordered_dictionary_to_xls(comparison_probabilities, 'comparison_smaller_than_results')            
 
     return comparison_probabilities
 
 
 
 def get_significant_comparisons(  bootstrapped_data             , 
-                                  number_of_resamples           , 
-                                  significance_threshold = 0.05 , 
-                                  csv_export = False)           : 
+                                  significance_threshold = 0.05 ): 
 
 
     #get comparison smaller than all permutations
@@ -231,15 +429,15 @@ def get_significant_comparisons(  bootstrapped_data             ,
         
         #compute the probabilities how often the first dataset value is smaller then the second    
         dataset_name_sequence = (p[0][0], p[1][0])    
-        comparison_probabilities[' < '.join(dataset_name_sequence)] = np.float( np.sum( average_comparison ) ) / number_of_resamples
+        comparison_probabilities[' < '.join(dataset_name_sequence)] = np.float( np.sum( average_comparison ) ) / get_number_of_resamples()
 
     significant_comparison_probabilities = {}
     for  comparison, probability in comparison_probabilities.iteritems():
         if (probability <= significance_threshold):
             significant_comparison_probabilities[comparison] = probability
     
-    if csv_export:
-        save_dictionary_to_csv(significant_comparison_probabilities, 'signification_comparisons_results.csv')        
+    if get_file_export_flag():
+        save_unordered_dictionary_to_xls(significant_comparison_probabilities, 'significant_comparisons_results')        
     
     return significant_comparison_probabilities
 
@@ -248,26 +446,24 @@ def get_significant_comparisons(  bootstrapped_data             ,
         
 
 
-def get_ranking(bootstrapped_data, number_of_resamples, csv_export = False):
+def get_ranking(bootstrapped_data):
 
     #bootstrapped_data      = get_resampled_datasets(dataset, number_of_resamples)
     averaged_bootstrapped  = get_average_bootstrapped_data(bootstrapped_data)
     
-    ranked_bootstrapped_dataset = get_ranking_by_size(averaged_bootstrapped, number_of_resamples)
+    ranked_bootstrapped_dataset = get_ranking_by_size(averaged_bootstrapped, get_number_of_resamples())
     
     ranking_average =get_mean_after_ranking(ranked_bootstrapped_dataset)
     
-    if csv_export:
-        save_dictionary_to_csv(ranking_average, 'ranking_results.csv') 
+    if get_file_export_flag():
+        save_dictionary_to_csv(ranking_average, name_order, 'ranking_results') 
     
     print ranking_average
 
 
 
-def get_relative_average(bootstrapped_data            , 
-                         number_of_resamples          , 
-                         reference_name               , 
-                         csv_export = False          ):
+def get_relative_average(bootstrapped_data            ,  
+                         reference_name               ):
     
     #bootstrapped_data = get_resampled_datasets(dataset, number_of_resamples)    
      
@@ -288,15 +484,21 @@ def get_relative_average(bootstrapped_data            ,
             reference[key] = bootstrapped_data_2D_Array / averaged_bootstrapped_datasets[reference_name]
             reference_avg[key] = np.average(reference[key], axis = 0)
     
+    
+    #standard error of the mean of the rest of the dataset
+    standard_error_mean = get_standard_error_of_the_mean(reference)    
+    
     #average the normalised bootstrapped datasets
     total_average_dataset = {}
     for key, bootstrapped_data_1D_Array in reference_avg.iteritems():
         total_average_dataset[key] = np.average(bootstrapped_data_1D_Array)
     
-    if csv_export:
-        save_dictionary_to_csv(total_average_dataset, 'relative_average_results.csv') 
-        
-    return total_average_dataset
+    if get_file_export_flag():
+        save_dataset_and_sem_to_file(total_average_dataset , standard_error_mean , 'realative_average')
+#        save_data_with_sem_to_csv(total_average_dataset, standard_error_mean,name_order, 'relative_average_results') 
+    
+
+    return total_average_dataset, standard_error_mean
            
 
 
@@ -339,12 +541,12 @@ def get_mean_after_ranking(ranked_dataset):
         
     return averaged_rank_bootstrapped_dataset
 
-def get_resampled_datasets(dataset, resampling_numbers):
+def get_resampled_datasets(dataset):
     bootstrapped_datasets = {}
 
     #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
     for key, data in dataset.iteritems():
-        bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), resampling_numbers ) * len(data) ))]
+        bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), get_number_of_resamples() ) * len(data) ))]
     
     return bootstrapped_datasets
 
@@ -360,9 +562,22 @@ def get_average_bootstrapped_data(bootstrapped_dataset):
         
     return averaged_bootstrapped_datasets
 
+def get_standard_error_of_the_mean(bootstrapped_dataset):
+    
+    sem_results = {}    
+    for key, bootstrapped_data_2D_Array in bootstrapped_dataset.iteritems():
+        sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
+    
+    for key, bootstrapped_data_2D_Array in sem_results.iteritems():
+        sem_results[key] = np.mean(bootstrapped_data_2D_Array)
+        
+    return sem_results
+
+
 
 #==============================================================================
-# plotting
+# plotting FIXME: Just sketching the functionality has to be changed for
+#                 a nicer API
 #==============================================================================
 
 
