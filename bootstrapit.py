@@ -17,11 +17,6 @@ import xlrd
 # file handling
 #==============================================================================
 
-
-
-
-
-
 def import_spreadsheet(filename):
 
        
@@ -63,12 +58,26 @@ def import_spreadsheet(filename):
     
     #change list to dictionary with first row as keys        
     datasets = {}
-    for column in result:
+    for column in row_list:
         datasets[column[0]] = column[1:]
 
     new_dataset = {}
     for key, value in datasets.iteritems():
-        new_dataset[key] =  np.asarray(value, dtype=np.float) 
+        
+        #try to convert list to numpy float array        
+        try:
+            new_dataset[key] =  np.asarray(value, dtype=np.float)
+        
+        #when this fails there is possbily a empty cell
+        except ValueError:
+            data_array = np.array([], dtype = np.float)
+            print 'Dataset contains empty cells, if this is ok than go on'
+            for item in value:
+                #just add the elements which are not empty                
+                if item:                
+                    data_array = np.append(data_array, item)
+                    
+            new_dataset[key] = data_array
     
     #return dataset as dictionary and list order as list
     return new_dataset, list_order       
@@ -116,87 +125,6 @@ def parse_csv(filename):
                 row_list.append(row)
             
     return row_list
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def import_column_ordered_csv_data(filename):
-
-    with open(filename) as csvfile:
-        
-        #check what delimiters the file uses
-        dialect = csv.Sniffer().sniff( csvfile.read(1024) )
-        
-        #seek to the beginning of the file
-        csvfile.seek(0)
-        
-        #read all rows and append them to a list  
-        reader = csv.reader(csvfile,dialect)
-        row_list = []
-        for row in reader:
-            row_list.append(row)
-        
-        #transpose the lists
-        result = [list(x) for x in zip(*row_list)]        
-        list_order  = row_list        
-        
-        #change list to dictionary with first row as keys        
-        datasets = {}
-        for column in result:
-            datasets[column[0]] = column[1:]
-    
-        new_dataset = {}
-        for key, value in datasets.iteritems():
-            new_dataset[key] =  np.asarray(value, dtype=np.float) 
-        
-        #return dataset as dictionary and list order as list
-        return new_dataset, list_order[0]
-
-
-def import_row_ordered_csv_data(filename):
-
-    with open('input.csv') as csvfile:
-        
-        #check what delimiters the file uses
-        dialect = csv.Sniffer().sniff( csvfile.read(1024) )
-        
-        #seek to the beginning of the file
-        csvfile.seek(0)
-        
-        #read all rows and append them to a list  
-        reader = csv.reader(csvfile,dialect)
-        row_list = []
-        for row in reader:
-            row_list.append(row)
-        
-        #transpose the lists
-        transposed_list = [list(x) for x in zip(*row_list)]        
-        list_order  = transposed_list[0]        
-        
-        #change list to dictionary with first row as keys        
-        datasets = {}
-        for column in row_list:
-            datasets[column[0]] = column[1:]
-    
-        new_dataset = {}
-        for key, value in datasets.iteritems():
-            new_dataset[key] =  np.asarray(value, dtype=np.float) 
-        
-        #return dataset as dictionary and list order as list
-        return new_dataset, list_order
-
 
 
 def save_dictionary_to_csv(dict, filename):
