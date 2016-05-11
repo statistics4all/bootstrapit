@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 """
-Created on    Thu Nov 26 2015
-Final version Thu Jan 14 2016
-
 @author: Thomas Ost, Hanspeter Schmid 
 """
 

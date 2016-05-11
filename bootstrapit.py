@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr  9 16:33:04 2016
-
 @author: Thomas Ost, Hanspeter Schmid 
 """
 
@@ -12,11 +10,43 @@ import matplotlib.pyplot as plt
 import itertools
 import csv
 import xlrd
+import os
+
+
+#==============================================================================
+# parameter
+#==============================================================================
+create_folder = False
+directory     = 'bootstrapit_results'
 
 #==============================================================================
 # file handling
 #==============================================================================
 
+def set_folder_export_flag(export):
+    global create_folder
+    create_folder = export
+
+def get_folder_export_flag():
+    global create_folder
+    return create_folder
+
+def set_folder_name(name):
+    global directory
+    directory = name
+    
+def get_folder_name():
+    global directory    
+    return directory
+    
+def create_folder():
+    #TODO: add gui prompt to choose directory    
+    global directory
+    if not os.path.exists(directory):
+        os.makedirs(directory)    
+    
+    
+    
 def import_spreadsheet(filename):
 
        
@@ -127,7 +157,12 @@ def parse_csv(filename):
     return row_list
 
 
-def save_dictionary_to_csv(dict, filename):
+def save_dictionary_to_csv(dict, filename):    
+    if get_folder_export_flag():
+        create_folder()
+        filename = '/'.join((get_folder_name(), filename))
+
+    
     with open(filename, 'wb') as f:
         w = csv.DictWriter(f, dict.keys())
         w.writeheader()
