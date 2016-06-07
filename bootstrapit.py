@@ -31,90 +31,49 @@ class FileHandling:
         self.use_file            = False
         self. directory_name     = 'bootstrapit_results'
         self.file_type           = 'xlsx'
-        
+        self.file_name           = 'bootstrapit_results'      
         self.export_order        = []
         
-    def set_number_of_resamples(self, N):
-        self.number_of_resamples = N
-
-    def get_number_of_resamples(self):
-        return self.number_of_resamples
-    
-    def set_use_directory(self, is_used):
-        self.use_directory = is_used
-    
-    def get_use_directory(self):
-        return self.use_directory
-    
-    def set_use_file(self, is_used):
-        self.use_file  = is_used
-    
-    def get_use_file(self):
-        return self.use_file
-    
-    def set_directory_name(self, name):
-        self. directory_name = name
-        
-    def get_directory_name(self):  
-        return self. directory_name
-        
+            
     def create_folder(self):
         #TODO: add gui prompt to choose directory    
         if not os.path.exists(self.directory_name):
             os.makedirs(self.directory_name)    
-    
-    def set_file_type(self, f_type):
-        self.file_type  = f_type
-    
-    def get_file_type(self):
-        return self.file_type    
-    
-    def set_export_order(self, order_list):
-        self.export_order  = order_list
-    
-    def get_export_order(self):
-        return self.export_order  
-
-
-
-    def import_spreadsheet(self, filename):
-    
-           
-        filetype_check = filename.split('.')
-        filetype = filetype_check[-1]
-            
         
+    def import_spreadsheet(self, filename):
+               
+        filetype_check = filename.split('.')
+        filetype       = filetype_check[-1]
+                   
         if filetype == 'csv':
             #call function parse csv
-            row_list = parse_csv(filename)
+            row_list = self.parse_csv(filename)
         
         elif (filetype == 'xls') or (filetype == 'xlsx'):
             #call function pass xls
-            row_list = parse_xls_xlsx(filename)
+            row_list = self.parse_xls_xlsx(filename)
         
         else:
             print 'ERROR: wrong file type'
             return -1
     
-        if column_or_row_ordered(row_list) == 'error':
+        if self.column_or_row_ordered(row_list) == 'error':
             print 'ERROR: something is wrong with your spreadsheet layout'
             return -1
         
-        elif column_or_row_ordered(row_list) == 'row':
+        elif self.column_or_row_ordered(row_list) == 'row':
             transposed_list = [list(x) for x in zip(*row_list)]        
-            list_order  = transposed_list[0]
+            list_order      = transposed_list[0]
         
-        elif column_or_row_ordered(row_list) == 'column':
+        elif self.column_or_row_ordered(row_list) == 'column':
             #transpose the lists
             list_order  = row_list[0]          
-            row_list = [list(x) for x in zip(*row_list)]
-            
-        
+            row_list    = [list(x) for x in zip(*row_list)]
+               
         else:
             print 'ERROR: something is wrong with your spreadsheet layout'
             return -1
             
-               
         
         #change list to dictionary with first row as keys        
         datasets = {}
@@ -158,7 +117,7 @@ class FileHandling:
 
     def parse_xls_xlsx(self, filename):
     
-        book = xlrd.open_workbook(filename)
+        book  = xlrd.open_workbook(filename)
         sheet = book.sheet_by_index(0)
         
         row_list = []
@@ -167,10 +126,6 @@ class FileHandling:
             row_list.append(row_values)
         
         return row_list
-
-
-
-
 
 
     def parse_csv(self, filename):
@@ -193,25 +148,25 @@ class FileHandling:
 
 
     def save_dataset_and_sem_to_file(self, data_dict, sem_dict, function_name):
-        if get_file_type()   == 'csv' :
+        if self.file_type  == 'csv' :
             print 'csv file export'
-            filename = '_'.join((get_folder_name(),function_name))
+            filename = '_'.join((self.directory_name,function_name))
             
-            save_data_with_sem_to_csv(data_dict        , 
-                                      sem_dict         , 
-                                      get_name_order() , 
-                                      filename         )           
+            self.save_data_with_sem_to_csv(data_dict    , 
+                                      sem_dict          , 
+                                      self.export_order , 
+                                      filename          )           
             
-        elif get_file_type() == 'xls' :
+        elif self.file_type == 'xls' :
             print 'xls file export'
-            filename = '_'.join((get_folder_name(),function_name))
+            filename = '_'.join((self.directory_name,function_name))
             
-            save_data_with_sem_to_xls(data_dict        , 
-                                      sem_dict         , 
-                                      get_name_order() , 
-                                      filename         )
+            self.save_data_with_sem_to_xls(data_dict    , 
+                                      sem_dict          , 
+                                      self.export_order , 
+                                      filename          )
             
-        elif get_file_type() == 'xlsx':
+        elif self.file_type == 'xlsx':
             print 'xlsx file export'
             #TODO: implement xlsx export
         else:
@@ -226,8 +181,7 @@ class FileHandling:
         
         for name in order_list:
             csv_export_list.append( dict[name] )
-    
-    
+      
         #check if there are more than one value in list to export
         if csv_export_list[0].size > 1:
             csv_export_list = [list(x) for x in zip(*csv_export_list)]  
@@ -242,23 +196,27 @@ class FileHandling:
             else:
                 writer.writerow ( csv_export_list )
     
-    def check_filename_for_slashes(filename):
+    def check_filename_for_slashes(self, filename):
         filename = filename.replace('/',' ')
         return filename
 
             
             
-    def save_data_with_sem_to_csv(self, data_dict, sem_dict, order_list, filename):
+    def save_data_with_sem_to_csv(self       , 
+                                  data_dict  , 
+                                  sem_dict   , 
+                                  order_list , 
+                                  filename  ):
     
         csv_export_list     = []
         csv_sem_export_list = []
         
-        filename = check_filename_for_slashes(filename)
+        filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'csv'))    
         
-        if get_use_directory():
-            create_folder()
-            filename = '/'.join((get_directory_name(), filename))    
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))    
         
         for name in order_list:
             csv_export_list.append    ( data_dict[name] )
@@ -282,17 +240,21 @@ class FileHandling:
             writer.writerow(csv_sem_export_list)
         
         
-    def save_data_with_sem_to_xls(self, data_dict, sem_dict, order_list, filename):
+    def save_data_with_sem_to_xls(self , 
+                                  data_dict  , 
+                                  sem_dict   , 
+                                  order_list , 
+                                  filename  ):
     
         csv_export_list     = []
         csv_sem_export_list = []
         
-        filename = check_filename_for_slashes(filename)
+        filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'xls'))    
         
-        if get_use_directory():
-            create_folder()
-            filename = '/'.join((get_directory_name(), filename))    
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))    
         
         for name in order_list:
             csv_export_list.append    ( data_dict[name] )
@@ -308,8 +270,8 @@ class FileHandling:
         excell_list.append(csv_export_list)
         excell_list.append(csv_sem_export_list)
         
-        worksheetname = get_folder_name()
-        worksheetname = check_filename_for_slashes(worksheetname)    
+        worksheetname = self.directory_name
+        worksheetname = self.check_filename_for_slashes(worksheetname)    
         
         book = xlwt.Workbook(encoding="utf-8")
         sheet = book.add_sheet(worksheetname)
@@ -323,14 +285,14 @@ class FileHandling:
     #TODO: integrate in general save storage function
     def save_unordered_dictionary_to_csv(self, dict, filename):
         
-        filename = check_filename_for_slashes(filename)
+        filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'csv'))     
-        filename = '_'.join((get_directory_name(),filename)) 
-        filename = check_filename_for_slashes(filename)
+        filename = '_'.join((self.directory_name,filename)) 
+        filename = self.check_filename_for_slashes(filename)
         
-        if get_use_directory():
-            create_folder()
-            filename = '/'.join((get_directory_name(), filename))
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))
     
         
         export_list = []
@@ -344,22 +306,22 @@ class FileHandling:
 
     def save_unordered_dictionary_to_xls(self, dict, filename):
         
-        filename = check_filename_for_slashes(filename)
+        filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'xls'))     
-        filename = '_'.join((get_directory_name(),filename)) 
-        filename = check_filename_for_slashes(filename)
+        filename = '_'.join((self.get_directory_name(),filename)) 
+        filename = self.check_filename_for_slashes(filename)
         
-        if get_use_directory():
-            create_folder()
-            filename = '/'.join((get_directory_name(), filename))
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))
     
         
         export_list = []
         for key, value in dict.iteritems():
             export_list.append([key,value])
         
-        worksheetname = get_folder_name()
-        worksheetname = check_filename_for_slashes(worksheetname)    
+        worksheetname = self.directory_name
+        worksheetname = self.check_filename_for_slashes(worksheetname)    
         
         book = xlwt.Workbook(encoding="utf-8")
         sheet = book.add_sheet(worksheetname)
@@ -369,33 +331,69 @@ class FileHandling:
         
         book.save(filename)
 
+
+
+
 #==============================================================================
 # Bootstrapping
 #==============================================================================
 
 class Bootstrapit:
-    def __init__(self, original_data):
+    def __init__(self, filename):
         self.number_of_resamples = 10000
         self.bootstrapped_data   = {}
-        
+        self.export_order        = []
+     
+      
+        #file handling parameters and initialisations
+        self.fh  = FileHandling()
+        self.original_data, self.import_order_list = self.fh.import_spreadsheet(filename)
+        self.bootstrapped_data   = self.get_resampled_datasets(self.original_data)
+         
+        self.store_data     = True
+        self.use_directory  = False
+        self.use_file       = False
+        self.file_type      = 'xls'
+        self.directory_name = 'bootstrapped_results'
         
 
-    def get_bootstrapped_average(self):
+    
+    def init_file_handling( self ):
+        
+        if self.store_data:
+            self.use_directory    = True
+            self.use_file         = True
+            self.fh.use_directory = self.use_directory
+            self.fh.use_file      = self.use_file 
+                 
+        else:
+            self.use_directory    = False
+            self.use_file         = False
+            self.fh.use_directory = self.use_directory
+            self.fh.use_file      = self.use_file 
+        
+        
+        self.fh.file_type      = self.file_type
+        self.fh.directory_name = self.directory_name
+    
+    
+    
+    def get_bootstrapped_average( self ):
         
         averaged_bootstrapped \
-            = get_average_bootstrapped_data(self.bootstrapped_data)
+            = self.get_average_bootstrapped_data()
             
         averaged_data = {}        
         for key, values in averaged_bootstrapped.iteritems():
             averaged_data[key]  =  np.mean(values, axis=0)
             
         standard_error_mean \
-            = get_standard_error_of_the_mean(self.bootstrapped_data)
+            = self.get_standard_error_of_the_mean()
         
-        if get_use_file():
-            save_dataset_and_sem_to_file( averaged_data          , 
-                                          standard_error_mean    , 
-                                          'bootstrapped_average' )
+        if self.fh.use_file:
+            self.fh.save_dataset_and_sem_to_file( averaged_data          , 
+                                                  standard_error_mean    , 
+                                                  'bootstrapped_average' )
          
     
         return averaged_data, standard_error_mean
@@ -407,7 +405,7 @@ class Bootstrapit:
     
         #get comparison smaller than all permutations
         averaged_bootstrapped\
-            = get_average_bootstrapped_data(self.bootstrapped_data)
+            = self.get_average_bootstrapped_data(self.bootstrapped_data)
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
@@ -420,10 +418,11 @@ class Bootstrapit:
         #smaller then the second    
             dataset_name_sequence = (p[0][0], p[1][0])    
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
-                = np.float( np.sum( average_comparison ) ) / self.get_number_of_resamples()
+                = np.float( np.sum( average_comparison ) )              \
+                / self.get_number_of_resamples()
     
-        if get_file_export_flag():       
-           save_unordered_dictionary_to_xls(comparison_probabilities         , 
+        if self.fh.use_file:      
+            self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
                                             'comparison_smaller_than_results')            
     
         return comparison_probabilities
@@ -434,28 +433,32 @@ class Bootstrapit:
     
         #get comparison smaller than all permutations
         averaged_bootstrapped \
-            = get_average_bootstrapped_data( self.bootstrapped_data )
+            = self.get_average_bootstrapped_data( self.bootstrapped_data )
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
         for p in itertools.permutations(averaged_bootstrapped.iteritems(),2):
             
-            #compare each permutation of the averaged bootstraped value with eachother    
+            #compare each permutation of the averaged bootstraped value 
+            #with eachother    
             average_comparison    = p[0][1] < p[1][1] 
             
-            #compute the probabilities how often the first dataset value is smaller then the second    
+            #compute the probabilities how often the first dataset value is 
+            #smaller then the second    
             dataset_name_sequence = (p[0][0], p[1][0])    
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
-                = np.float( np.sum( average_comparison ) ) / get_number_of_resamples()
+                = np.float( np.sum( average_comparison ) )              \
+                / self.number_of_resamples
     
         significant_comparison_probabilities = {}
         for  comparison, probability in comparison_probabilities.iteritems():
             if (probability <= significance_threshold):
                 significant_comparison_probabilities[comparison] = probability
         
-        if get_file_export_flag():
-            save_unordered_dictionary_to_xls( significant_comparison_probabilities , 
-                                             'significant_comparisons_results'     )        
+        if self.fh.use_file:
+             self.fh.save_unordered_dictionary_to_xls(                        \
+                                         significant_comparison_probabilities , 
+                                             'significant_comparisons_results')        
         
         return significant_comparison_probabilities
 
@@ -465,22 +468,25 @@ class Bootstrapit:
     def get_ranking( self ):
     
         averaged_bootstrapped \
-            = get_average_bootstrapped_data( self.bootstrapped_data )
+            = self.get_average_bootstrapped_data( self.bootstrapped_data )
         
         ranked_bootstrapped_dataset \
-            = get_ranking_by_size( averaged_bootstrapped     , 
-                                   get_number_of_resamples() )
+            = self.get_ranking_by_size( averaged_bootstrapped          , 
+                                        self.get_number_of_resamples() )
         
-        ranking_average = get_mean_after_ranking(ranked_bootstrapped_dataset)
+        ranking_average \
+            = self.get_mean_after_ranking(ranked_bootstrapped_dataset)
         
-        if get_file_export_flag():
-            save_dictionary_to_csv(ranking_average, name_order, 'ranking_results') 
+        if self.fh.use_file:
+             self.fh.save_dictionary_to_csv(ranking_average    , 
+                                            self.fh.name_order , 
+                                            'ranking_results'  ) 
     
-    print ranking_average
+        print ranking_average
 
 
 
-    def get_relative_average( self , reference_name  ):
+    def get_relative_average( self , reference_name ):
         
         #bootstrapped_data = get_resampled_datasets(dataset, number_of_resamples)    
          
@@ -489,106 +495,133 @@ class Bootstrapit:
         reference_avg                  = {}
         
         #normalise the reference dataset
-        for key, bootstrapped_data_2D_Array in bootstrapped_data.iteritems():
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
             if key == reference_name:
-                averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis = 0)
-                reference[key] = bootstrapped_data_2D_Array / averaged_bootstrapped_datasets[key]
+                averaged_bootstrapped_datasets[key] \
+                    = np.average(bootstrapped_data_2D_Array, axis = 0)
+                    
+                reference[key]     = bootstrapped_data_2D_Array        \
+                                   / averaged_bootstrapped_datasets[key]
+                               
                 reference_avg[key] = np.average(reference[key], axis = 0)
+                
                 
         #normalise every other dataset based on the average of the reference dset       
         for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
             if key != reference_name:
-                reference[key] = bootstrapped_data_2D_Array / averaged_bootstrapped_datasets[reference_name]
+                reference[key] = bootstrapped_data_2D_Array                   \
+                               / averaged_bootstrapped_datasets[reference_name]
+                               
+
                 reference_avg[key] = np.average(reference[key], axis = 0)
         
         
         #standard error of the mean of the rest of the dataset
-        standard_error_mean = get_standard_error_of_the_mean(reference)    
+        standard_error_mean = self.get_standard_error_of_the_mean(reference)    
         
         #average the normalised bootstrapped datasets
         total_average_dataset = {}
         for key, bootstrapped_data_1D_Array in reference_avg.iteritems():
             total_average_dataset[key] = np.average(bootstrapped_data_1D_Array)
         
-        if get_file_export_flag():
-            save_dataset_and_sem_to_file(total_average_dataset , standard_error_mean , 'relative_average')
-        #save_data_with_sem_to_csv(total_average_dataset, standard_error_mean,name_order, 'relative_average_results') 
-        
-    
+        if self.fh.use_file:
+             self.fh.save_dataset_and_sem_to_file(total_average_dataset , 
+                                                  standard_error_mean   , 
+                                                  'relative_average'    )
+
         return total_average_dataset, standard_error_mean
            
 
 
 #==============================================================================
-# helper functions
+# helper functions Bootstrapit
 #==============================================================================
 
 
-def get_ranking_by_size(bootstrapped_averaged_dataset, number_of_resamples):
-    #rank the averaged datasets accroding to their size compared to the other mouse datasets
-    #smallest --> lowest rank
-    #TODO: add option for biggest size lowest rank
-
-    averaged_bootstrapped_2D_Array = np.zeros( shape=(number_of_resamples, len(bootstrapped_averaged_dataset)) )
-    key_order_list = []
-    running_array_index = 0
-
-    #this is by far not an efficiant or readable solution. But functional at the moment
-    for key, average_bootstrapped_data in bootstrapped_averaged_dataset.iteritems():
-        averaged_bootstrapped_2D_Array[:,running_array_index] = average_bootstrapped_data
-        key_order_list.append(key)
-        running_array_index = running_array_index + 1
-
-    #rank data across different datasets for comparison
-    ranked_averaged_bootstrapped_dataset_2D_Array = np.apply_along_axis(( lambda x: spst.rankdata(x) ), 1, averaged_bootstrapped_2D_Array)
-
-    #create new dictionary with ranked data
-    ranked_averaged_bootstrapped_dataset = {}
-    for column, key in zip(ranked_averaged_bootstrapped_dataset_2D_Array.T, key_order_list):
-        ranked_averaged_bootstrapped_dataset[key] = column
+    def get_ranking_by_size(self, bootstrapped_averaged_dataset, number_of_resamples):
+        #rank the averaged datasets accroding to their size compared to the other mouse datasets
+        #smallest --> lowest rank
+        #TODO: add option for biggest size lowest rank
+    
+        averaged_bootstrapped_2D_Array = np.zeros( shape=(number_of_resamples, len(bootstrapped_averaged_dataset)) )
+        key_order_list = []
+        running_array_index = 0
+    
+        #this is by far not an efficiant or readable solution. But functional at the moment
+        for key, average_bootstrapped_data in bootstrapped_averaged_dataset.iteritems():
+            averaged_bootstrapped_2D_Array[:,running_array_index] = average_bootstrapped_data
+            key_order_list.append(key)
+            running_array_index = running_array_index + 1
+    
+        #rank data across different datasets for comparison
+        ranked_averaged_bootstrapped_dataset_2D_Array = np.apply_along_axis(( lambda x: spst.rankdata(x) ), 1, averaged_bootstrapped_2D_Array)
+    
+        #create new dictionary with ranked data
+        ranked_averaged_bootstrapped_dataset = {}
+        for column, key in zip(ranked_averaged_bootstrapped_dataset_2D_Array.T, key_order_list):
+            ranked_averaged_bootstrapped_dataset[key] = column
+            
+        return ranked_averaged_bootstrapped_dataset
+         
+    def get_mean_after_ranking(self, ranked_dataset):
         
-    return ranked_averaged_bootstrapped_dataset
-     
-def get_mean_after_ranking(ranked_dataset):
+        #create dictionary with the mean value of all ranks for each dataset
+        averaged_rank_bootstrapped_dataset = {}
+        for key, ranked_array in ranked_dataset.iteritems():
+            averaged_rank_bootstrapped_dataset[key]  =  np.mean(ranked_array, axis=0)
+            
+        return averaged_rank_bootstrapped_dataset
+
+    def get_resampled_datasets(self, dataset):
+        self.bootstrapped_datasets = {}
     
-    #create dictionary with the mean value of all ranks for each dataset
-    averaged_rank_bootstrapped_dataset = {}
-    for key, ranked_array in ranked_dataset.iteritems():
-        averaged_rank_bootstrapped_dataset[key]  =  np.mean(ranked_array, axis=0)
+        #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
+        for key, data in dataset.iteritems():
+            self.bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), self.number_of_resamples ) * len(data) ))]
         
-    return averaged_rank_bootstrapped_dataset
-
-def get_resampled_datasets(dataset):
-    bootstrapped_datasets = {}
-
-    #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
-    for key, data in dataset.iteritems():
-        bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), get_number_of_resamples() ) * len(data) ))]
-    
-    return bootstrapped_datasets
+        return self.bootstrapped_datasets
 
 
 
-def get_average_bootstrapped_data(bootstrapped_dataset):
-    
-    #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
-    averaged_bootstrapped_datasets = {}
-
-    for key, bootstrapped_data_2D_Array in bootstrapped_dataset.iteritems():
-        averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis = 0)
+    def get_average_bootstrapped_data(self):
         
-    return averaged_bootstrapped_datasets
+        #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
+        averaged_bootstrapped_datasets = {}
+    
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+            averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis = 0)
+            
+        return averaged_bootstrapped_datasets
 
-def get_standard_error_of_the_mean(bootstrapped_dataset):
-    
-    sem_results = {}    
-    for key, bootstrapped_data_2D_Array in bootstrapped_dataset.iteritems():
-        sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
-    
-    for key, bootstrapped_data_2D_Array in sem_results.iteritems():
-        sem_results[key] = np.mean(bootstrapped_data_2D_Array)
+    def get_standard_error_of_the_mean(self):
         
-    return sem_results
+        sem_results = {}    
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+            sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
+        
+        for key, bootstrapped_data_2D_Array in sem_results.iteritems():
+            sem_results[key] = np.mean(bootstrapped_data_2D_Array)
+            
+        return sem_results
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
