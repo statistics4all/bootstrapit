@@ -27,24 +27,26 @@ please enter the full file_path. This way bootstrapit can import your data
 correctly.
 """
 # generating a new analysis workbench by defining your input file
-analysis_1 = Bootstrapit('inputrow.xlsx')
-
-# setting the number of random draws of your data (number of resampling)
+# Setting the number of resamplings of your data (number_of_resamples).
 # 10000 is a good number to start and enough for a lot of cases, but you 
-# can increase this number as you like. This can lead to memory issues when 
-# you have very very large datasets.
-analysis_1.number_of_resamples = 10000
-
+# can increase this number as you like. Increasing can lead to memory issues 
+# when you have very very large datasets. You can play around and look at
+# the results.
 # if you wish to store your data in a folder you can set export to True. This
 # will automatically store your analysis data in a subfolder where the 
 # bootstrapît script is store. You can copy and paste it form there. 
 # You also have to specify your export format. We support csv and xls at the
 # moment.
-analysis_1.use_directory  = True
-analysis_1.use_file       = True
-analysis_1.file_type      = 'xls'
-analysis_1.directory_name = 'Fibrosis'
-analysis_1.init_file_handling()#TODO: geht es auch ohne init???
+
+#FIXME: add all arguments to the initialisation of the Bootstrapit class
+
+analysis_1 = Bootstrapit('inputrow.xlsx'                    , 
+                         number_of_resamples   = 10000      ,
+                         store_data            = True       ,#FIXME: combine use directory and use file in one flag
+                         export_file_type      = 'xls'      ,
+                         export_directory_name = 'Fibrosis' )
+                         
+analysis_1.init_file_handling()#TODO: geht es auch ohne init???                   
 
 # Here you can set your export data order. It is important that the names are
 # exactly the same as in your data file, otherwise it will crash the program.
@@ -63,24 +65,37 @@ export_order_list        = ['WTY'   , #First
 analysis_1.export_order  = export_order_list
 
 
-#==============================================================================
+# Step 3: Run your analysis
+"""
+We configured our analysis in step 2 and are ready to compute. By initiialsing
+the Bootstrapit analysis in step 2, the data has been automatically imported
+and already been bootstrapped. This builds our base for getting some
+information about the data.
+
+Bootstrapit has a small featureset at the moment, but this already can be used
+to compare the results with other statistical analysis methods.
+
+Features:
+- average
+- relative average (normalised to a defined group of the dataset)
+- ranking (ranking experiment, which ranks the data according to size)
+- comparisons (gives us probabilities which can be used for significance tests)
+
+These features have an individual description. So you can understand in detail
+what is done in the background and how you can interpret your data. 
+"""
+
 # get average
-#==============================================================================
 analysis_1.get_bootstrapped_average()
 
-#==============================================================================
 # get relative average
-#==============================================================================
 analysis_1.get_relative_average( reference_name = 'WTY' )
 
-#==============================================================================
+
 # Compare the different mouse groups and compute the probabilites
-#==============================================================================
 analysis_1.get_comparison_smaller_than() 
 
-#==============================================================================
 # Print the probabilites if significant
-#==============================================================================
 analysis_1.get_significant_comparisons( significance_threshold = 0.08 )
 
 
