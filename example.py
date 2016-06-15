@@ -41,16 +41,19 @@ correctly.
 #FIXME: add all arguments to the initialisation of the Bootstrapit class
 
 analysis_1 = Bootstrapit('inputrow.xlsx'                    , 
-                         number_of_resamples   = 10000      ,
-                         store_data            = True       ,#FIXME: combine use directory and use file in one flag
-                         export_file_type      = 'xls'      ,
-                         export_directory_name = 'Fibrosis' )
-                         
-analysis_1.init_file_handling()#TODO: geht es auch ohne init???                   
+                         number_of_resamples   = 10000      )
+
+
+#Additional configurations
+
+#file export and file type
 
 # Here you can set your export data order. It is important that the names are
 # exactly the same as in your data file, otherwise it will crash the program.
 # If you want the same order as in the input file, simply delete these lines.
+
+#TODO: add check export order functionality
+
 export_order_list        = ['WTY'   , #First
                             'WTSO'  , 
                             'WTTO'  , 
@@ -62,7 +65,17 @@ export_order_list        = ['WTY'   , #First
                             'MCKSO' , 
                             'MCKTO' ] #Last
                             
-analysis_1.export_order  = export_order_list
+                            
+analysis_1.file_export_config( store_data            = True                 ,
+                               export_file_type      = 'xls'                ,
+                               export_directory_name = 'bootstrap_results'  ,
+                               export_order           = export_order_list   )
+
+
+#add standard error of the mean to the results
+analysis_1.use_sem = False
+
+
 
 
 # Step 3: Run your analysis
@@ -90,7 +103,6 @@ analysis_1.get_bootstrapped_average()
 
 # get relative average
 analysis_1.get_relative_average( reference_name = 'WTY' )
-
 
 # Compare the different mouse groups and compute the probabilites
 analysis_1.get_comparison_smaller_than() 

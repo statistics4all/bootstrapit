@@ -145,7 +145,29 @@ class FileHandling:
                 
         return row_list
 
-
+    def save_dataset_to_file(self, data_dict, function_name):
+            if self.file_type  == 'csv' :
+                print 'csv file export'
+                filename = '_'.join((self.directory_name,function_name))
+                
+                self.save_data_to_csv(data_dict    , 
+                                          self.export_order , 
+                                          filename          )           
+                
+            elif self.file_type == 'xls' :
+                print 'xls file export'
+                filename = '_'.join((self.directory_name,function_name))
+                
+                self.save_data_to_xls(data_dict    , 
+                                          self.export_order , 
+                                          filename          )
+                
+            elif self.file_type == 'xlsx':
+                print 'xlsx file export'
+                #TODO: implement xlsx export
+            else:
+                print 'ERROR: unknown export file type'
+                return -1
 
     def save_dataset_and_sem_to_file(self, data_dict, sem_dict, function_name):
         if self.file_type  == 'csv' :
@@ -153,18 +175,19 @@ class FileHandling:
             filename = '_'.join((self.directory_name,function_name))
             
             self.save_data_with_sem_to_csv(data_dict    , 
-                                      sem_dict          , 
-                                      self.export_order , 
-                                      filename          )           
+                                           sem_dict          , 
+                                           self.export_order , 
+                                           filename          )           
             
         elif self.file_type == 'xls' :
             print 'xls file export'
+        
             filename = '_'.join((self.directory_name,function_name))
-            
-            self.save_data_with_sem_to_xls(data_dict    , 
-                                      sem_dict          , 
-                                      self.export_order , 
-                                      filename          )
+                    
+            self.save_data_with_sem_to_xls(data_dict         , 
+                                           sem_dict          , 
+                                           self.export_order , 
+                                           filename          )
             
         elif self.file_type == 'xlsx':
             print 'xlsx file export'
@@ -250,7 +273,8 @@ class FileHandling:
         csv_sem_export_list = []
         
         filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'xls'))    
+        filename = '.'.join((filename,'xls')) 
+        
         
         if self.use_directory:
             self.create_folder()
@@ -259,8 +283,7 @@ class FileHandling:
         for name in order_list:
             csv_export_list.append    ( data_dict[name] )
             csv_sem_export_list.append( sem_dict[name]  )
-            
-    
+        
         #check if there are more than one value in list to export
         if csv_export_list[0].size > 1:
             csv_export_list = [list(x) for x in zip(*csv_export_list)]  
@@ -280,6 +303,82 @@ class FileHandling:
                 sheet.write(i, j, col)
         
         book.save(filename)
+    
+    def save_data_to_csv(self       , 
+                         data_dict  ,  
+                         order_list , 
+                         filename  ):
+        
+            csv_export_list     = []
+            
+            filename = self.check_filename_for_slashes(filename)
+            filename = '.'.join((filename,'csv'))    
+            
+            if self.use_directory:
+                self.create_folder()
+                filename = '/'.join((self.directory_name, filename))    
+            
+            for name in order_list:
+                csv_export_list.append    ( data_dict[name] )
+            
+            #check if there are more than one value in list to export
+            if csv_export_list[0].size > 1:
+                csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+        
+        
+            with open(filename, 'wb') as f:
+                writer = csv.writer(f)
+                writer.writerow ( order_list )
+                
+                if csv_export_list[0].size > 1:
+                    writer.writerows( csv_export_list )
+                else:
+                    writer.writerow ( csv_export_list )
+                
+                writer.writerow(csv_sem_export_list)
+        
+        
+    def save_data_to_xls(self       , 
+                         data_dict  , 
+                         order_list , 
+                         filename  ):
+    
+        csv_export_list     = []
+        
+        filename = self.check_filename_for_slashes(filename)
+        filename = '.'.join((filename,'xls'))    
+        
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))    
+        
+        for name in order_list:
+            csv_export_list.append    ( data_dict[name] )
+            
+    
+        #check if there are more than one value in list to export
+        if csv_export_list[0].size > 1:
+            csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+    
+        excell_list = []
+        excell_list.append(order_list)
+        excell_list.append(csv_export_list)
+ 
+        worksheetname = self.directory_name
+        worksheetname = self.check_filename_for_slashes(worksheetname)    
+        
+        book = xlwt.Workbook(encoding="utf-8")
+        sheet = book.add_sheet(worksheetname)
+        for i, l in enumerate(excell_list):
+            for j, col in enumerate(l):
+                sheet.write(i, j, col)
+        
+        book.save(filename)
+
+
+
+
+
 
 
     #TODO: integrate in general save storage function
@@ -339,43 +438,45 @@ class FileHandling:
 #==============================================================================
 
 class Bootstrapit:
-    def __init__(self, filename):
-        self.number_of_resamples = 10000
-        self.bootstrapped_data   = {}
-        self.export_order        = []
-     
-      
-        #file handling parameters and initialisations
-        self.fh  = FileHandling()
-        self.original_data, self.import_order_list = self.fh.import_spreadsheet(filename)
-        self.bootstrapped_data   = self.get_resampled_datasets(self.original_data)
-         
-        self.store_data     = True
-        self.use_directory  = False
-        self.use_file       = False
-        self.file_type      = 'xls'
-        self.directory_name = 'bootstrapped_results'
-        
+    def __init__(self, filename, number_of_resamples = 10000):
 
-    
-    def init_file_handling( self ):
+        self.number_of_resamples = number_of_resamples
+        self.bootstrapped_data   = {}
+        self.use_sem             = False
+      
+        self.fh  = FileHandling()
+        self.original_data, self.export_order = self.fh.import_spreadsheet(filename)
+        self.bootstrapped_data   = self.get_resampled_datasets(self.original_data)
+ 
+    def file_export_config(self                                         ,
+                           store_data            = True                 ,
+                           export_file_type      = 'xls'                ,
+                           export_directory_name = 'bootstrap_results'  ,
+                           export_order           = []                  ):
+                               
+        self.store_data     = store_data
         
+        #Check if bootstrapit should export data
         if self.store_data:
             self.use_directory    = True
             self.use_file         = True
             self.fh.use_directory = self.use_directory
             self.fh.use_file      = self.use_file 
-                 
         else:
             self.use_directory    = False
             self.use_file         = False
             self.fh.use_directory = self.use_directory
             self.fh.use_file      = self.use_file 
+            
+        self.file_type            = export_file_type
+        self.directory_name       = export_directory_name
+        self.fh.file_type         = self.file_type
+        self.fh.directory_name    = self.directory_name 
         
-        
-        self.fh.file_type      = self.file_type
-        self.fh.directory_name = self.directory_name
-    
+        if not export_order:        
+            self.fh.export_order      = self.export_order
+        else:
+            self.fh.export_order      = export_order               
     
     
     def get_bootstrapped_average( self ):
@@ -386,17 +487,33 @@ class Bootstrapit:
         averaged_data = {}        
         for key, values in averaged_bootstrapped.iteritems():
             averaged_data[key]  =  np.mean(values, axis=0)
-            
+        
+        
+        
         standard_error_mean \
             = self.get_standard_error_of_the_mean()
         
-        if self.fh.use_file:
+        
+        #File export decisions
+        if self.fh.use_file and self.use_sem:
             self.fh.save_dataset_and_sem_to_file( averaged_data          , 
                                                   standard_error_mean    , 
                                                   'bootstrapped_average' )
-         
-    
-        return averaged_data, standard_error_mean
+            return averaged_data, standard_error_mean
+            
+                                                  
+        elif self.fh.use_file and not self.use_sem:
+            self.fh.save_dataset_to_file( averaged_data          , 
+                                          'bootstrapped_average' )
+            return averaged_data
+
+        else:
+            
+            if self.use_sem:
+                return averaged_data, standard_error_mean
+            else:
+                return averaged_data                                 
+        
 
 
 
