@@ -40,8 +40,8 @@ correctly.
 
 #FIXME: add all arguments to the initialisation of the Bootstrapit class
 
-analysis_1 = Bootstrapit('inputrow.xlsx'                    , 
-                         number_of_resamples   = 10000      )
+analysis_1 = Bootstrapit('inputrow.xlsx'               , 
+                         number_of_resamples   = 10000 )
 
 
 #Additional configurations
@@ -98,16 +98,21 @@ what is done in the background and how you can interpret your data.
 #Works only for get mean at the moment value not for referenced/normalised mean.
 analysis_1.use_sem = False
 
-analysis_1.get_bootstrapped_average()
+analysis_1.get_bootstrapped_mean()
 
 # get relative average
-analysis_1.get_relative_average( reference_name = 'WTY' )
+analysis_1.get_normalised_bootstrapped_mean( reference_name = 'WTY' )
 
 # Compare the different mouse groups and compute the probabilites
-analysis_1.get_comparison_smaller_than() 
 
-# Print the probabilites if significant
-analysis_1.get_significant_comparisons( significance_threshold = 0.08 )
+#signifinance level configuration gives you an additional exported row which
+#shows you only the comparisons which are significant to your threshold
+analysis_1.use_significance_sort  = True
+analysis_1.significance_threshold = 0.05
+analysis_1.get_value_comparison_by_size() 
+
+
+
 
 #get ranking
 analysis_1.get_ranking()

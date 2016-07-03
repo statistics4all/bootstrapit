@@ -12,6 +12,7 @@ import itertools
 import csv
 import xlrd
 import xlwt
+from xlutils.copy import copy
 import os
 
 
@@ -400,7 +401,7 @@ class FileHandling:
             dw = csv.writer(f)
             dw.writerows(export_list)
 
-    def save_unordered_dictionary_to_xls(self, dict, filename):
+    def save_unordered_dictionary_to_xls(self, dict, filename, mode = 'create',column_offset = 0):
         
         filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'xls'))     
@@ -419,11 +420,19 @@ class FileHandling:
         worksheetname = self.directory_name
         worksheetname = self.check_filename_for_slashes(worksheetname)    
         
-        book = xlwt.Workbook(encoding="utf-8")
-        sheet = book.add_sheet(worksheetname)
+        if mode == 'create':        
+            book  = xlwt.Workbook(encoding="utf-8")
+            sheet = book.add_sheet(worksheetname)
+        elif mode == 'edit':
+            rb = xlrd.open_workbook(filename)
+            book = copy(rb)
+            sheet = book.get_sheet(0)
+        else:
+            "Ooops: This xls mode is not known, sorry!!!"            
+        
         for i, l in enumerate(export_list):
             for j, col in enumerate(l):
-                sheet.write(i, j, col)
+                sheet.write(i, j+column_offset, col)
         
         book.save(filename)
 
@@ -437,9 +446,11 @@ class FileHandling:
 class Bootstrapit:
     def __init__(self, filename, number_of_resamples = 10000):
 
-        self.number_of_resamples = number_of_resamples
-        self.bootstrapped_data   = {}
-        self.use_sem             = False
+        self.number_of_resamples    = number_of_resamples
+        self.bootstrapped_data      = {}
+        self.use_sem                = False
+        self.use_significance_sort  = False
+        self.significance_threshold = 0.05
       
         self.fh  = FileHandling()
         self.original_data, self.export_order = self.fh.import_spreadsheet(filename)
@@ -476,7 +487,7 @@ class Bootstrapit:
             self.fh.export_order      = export_order               
     
     
-    def get_bootstrapped_average( self ):
+    def get_bootstrapped_mean( self ):
         
         averaged_bootstrapped \
             = self.get_average_bootstrapped_data()
@@ -515,7 +526,7 @@ class Bootstrapit:
 
 
 
-    def get_comparison_smaller_than( self ):
+    def get_value_comparison_by_size( self ):
     
         #get comparison smaller than all permutations
         averaged_bootstrapped\
@@ -534,47 +545,37 @@ class Bootstrapit:
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
                 = np.float( np.sum( average_comparison ) )              \
                 / self.number_of_resamples
+                
+                
+
+    
+        
+        #TODO: ADD significant filtering to the export file.
     
         if self.fh.use_file:      
             self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
-                                            'comparison_smaller_than_results')            
-    
-        return comparison_probabilities
+                                            'comparison_by_size_results',
+                                            column_offset = 0                )            
+          
+        #filter out the signifiant comparisons
+        if self.use_significance_sort:
+            significant_comparison_probabilities = {}
+            for  comparison, probability in comparison_probabilities.iteritems():
+                if (probability <= self.significance_threshold):
+                    significant_comparison_probabilities[comparison] = probability                
+                        
+            if self.fh.use_file:      
+                self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
+                                                'comparison_by_size_results',
+                                                column_offset = 3           ,     
+                                                mode = 'edit') 
 
-
-
-    def get_significant_comparisons( self , significance_threshold = 0.05 ): 
     
-        #get comparison smaller than all permutations
-        averaged_bootstrapped \
-            = self.get_average_bootstrapped_data()
-        
-        comparison_probabilities = {}
-        #maybe use itertools-combinations here
-        for p in itertools.permutations(averaged_bootstrapped.iteritems(),2):
-            
-            #compare each permutation of the averaged bootstraped value 
-            #with eachother    
-            average_comparison    = p[0][1] < p[1][1] 
-            
-            #compute the probabilities how often the first dataset value is 
-            #smaller then the second    
-            dataset_name_sequence = (p[0][0], p[1][0])    
-            comparison_probabilities[' < '.join(dataset_name_sequence)] \
-                = np.float( np.sum( average_comparison ) )              \
-                / self.number_of_resamples
+        return comparison_probabilities, significant_comparison_probabilities 
     
-        significant_comparison_probabilities = {}
-        for  comparison, probability in comparison_probabilities.iteritems():
-            if (probability <= significance_threshold):
-                significant_comparison_probabilities[comparison] = probability
         
-        if self.fh.use_file:
-             self.fh.save_unordered_dictionary_to_xls(                        \
-                                         significant_comparison_probabilities , 
-                                             'significant_comparisons_results')        
         
-        return significant_comparison_probabilities
+
 
 
         
@@ -599,7 +600,7 @@ class Bootstrapit:
 
 
 
-    def get_relative_average( self , reference_name ):
+    def get_normalised_bootstrapped_mean( self , reference_name ):
         
         #bootstrapped_data = get_resampled_datasets(dataset, number_of_resamples)    
          
