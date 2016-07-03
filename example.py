@@ -72,12 +72,6 @@ analysis_1.file_export_config( store_data            = True                 ,
                                export_order           = export_order_list   )
 
 
-#add standard error of the mean to the results
-analysis_1.use_sem = False
-
-
-
-
 # Step 3: Run your analysis
 """
 We configured our analysis in step 2 and are ready to compute. By initiialsing
@@ -99,6 +93,11 @@ what is done in the background and how you can interpret your data.
 """
 
 # get average
+
+#add standard error of the mean to the results
+#Works only for get mean at the moment value not for referenced/normalised mean.
+analysis_1.use_sem = False
+
 analysis_1.get_bootstrapped_average()
 
 # get relative average
@@ -110,8 +109,8 @@ analysis_1.get_comparison_smaller_than()
 # Print the probabilites if significant
 analysis_1.get_significant_comparisons( significance_threshold = 0.08 )
 
-
-
+#get ranking
+analysis_1.get_ranking()
 
 
 

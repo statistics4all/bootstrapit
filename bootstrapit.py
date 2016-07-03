@@ -378,9 +378,6 @@ class FileHandling:
 
 
 
-
-
-
     #TODO: integrate in general save storage function
     def save_unordered_dictionary_to_csv(self, dict, filename):
         
@@ -407,7 +404,7 @@ class FileHandling:
         
         filename = self.check_filename_for_slashes(filename)
         filename = '.'.join((filename,'xls'))     
-        filename = '_'.join((self.get_directory_name(),filename)) 
+        filename = '_'.join((self.directory_name,filename)) 
         filename = self.check_filename_for_slashes(filename)
         
         if self.use_directory:
@@ -503,7 +500,7 @@ class Bootstrapit:
             
                                                   
         elif self.fh.use_file and not self.use_sem:
-            self.fh.save_dataset_to_file( averaged_data          , 
+            self.fh.save_daset_to_file( averaged_data          , 
                                           'bootstrapped_average' )
             return averaged_data
 
@@ -522,7 +519,7 @@ class Bootstrapit:
     
         #get comparison smaller than all permutations
         averaged_bootstrapped\
-            = self.get_average_bootstrapped_data(self.bootstrapped_data)
+            = self.get_average_bootstrapped_data()
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
@@ -536,7 +533,7 @@ class Bootstrapit:
             dataset_name_sequence = (p[0][0], p[1][0])    
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
                 = np.float( np.sum( average_comparison ) )              \
-                / self.get_number_of_resamples()
+                / self.number_of_resamples
     
         if self.fh.use_file:      
             self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
@@ -550,7 +547,7 @@ class Bootstrapit:
     
         #get comparison smaller than all permutations
         averaged_bootstrapped \
-            = self.get_average_bootstrapped_data( self.bootstrapped_data )
+            = self.get_average_bootstrapped_data()
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
@@ -585,18 +582,17 @@ class Bootstrapit:
     def get_ranking( self ):
     
         averaged_bootstrapped \
-            = self.get_average_bootstrapped_data( self.bootstrapped_data )
+            = self.get_average_bootstrapped_data()
         
         ranked_bootstrapped_dataset \
             = self.get_ranking_by_size( averaged_bootstrapped          , 
-                                        self.get_number_of_resamples() )
+                                        self.number_of_resamples )
         
         ranking_average \
             = self.get_mean_after_ranking(ranked_bootstrapped_dataset)
         
         if self.fh.use_file:
-             self.fh.save_dictionary_to_csv(ranking_average    , 
-                                            self.fh.name_order , 
+              self.fh.save_dataset_to_file(ranking_average    ,  
                                             'ranking_results'  ) 
     
         print ranking_average
@@ -634,17 +630,33 @@ class Bootstrapit:
         
         
         #standard error of the mean of the rest of the dataset
-        standard_error_mean = self.get_standard_error_of_the_mean(reference)    
+        #FIXME: Implement correct SEM for referenced mean
+        #standard_error_mean = self.get_standard_error_of_the_mean(reference)    
         
         #average the normalised bootstrapped datasets
         total_average_dataset = {}
         for key, bootstrapped_data_1D_Array in reference_avg.iteritems():
             total_average_dataset[key] = np.average(bootstrapped_data_1D_Array)
         
-        if self.fh.use_file:
-             self.fh.save_dataset_and_sem_to_file(total_average_dataset , 
-                                                  standard_error_mean   , 
-                                                  'relative_average'    )
+        #File export decisions
+        if self.fh.use_file and self.use_sem:
+            self.fh.save_dataset_and_sem_to_file( total_average_dataset          , 
+                                                  standard_error_mean    , 
+                                                  'bootstrapped__relative_average' )
+            return total_average_dataset, standard_error_mean
+            
+                                                  
+        elif self.fh.use_file and not self.use_sem:
+            self.fh.save_dataset_to_file( total_average_dataset          , 
+                                          'bootstrapped__relative_average' )
+            return total_average_dataset
+
+        else:
+            
+            if self.use_sem:
+                return total_average_dataset, standard_error_mean
+            else:
+                return total_average_dataset
 
         return total_average_dataset, standard_error_mean
            
