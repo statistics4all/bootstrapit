@@ -1,4 +1,4 @@
-![bootstrapIT](/bootstrapit_logo.png?style=centerme)
+-> ![bootstrapIT](/bootstrapit_logo.png) <-
 #
 Open Source API for bootstrapping your data
 
