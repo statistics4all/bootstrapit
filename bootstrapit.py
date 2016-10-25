@@ -12,7 +12,7 @@ import itertools
 import csv
 import xlrd
 import xlwt
-from xlutils.copy import copy
+from xlutils.copy import copy #replace with already installed package
 import os
 
 
@@ -55,11 +55,11 @@ class FileHandling:
             row_list = self.parse_xls_xlsx(filename)
         
         else:
-            print 'ERROR: wrong file type'
+            print ('ERROR: wrong file type')
             return -1
     
         if self.column_or_row_ordered(row_list) == 'error':
-            print 'ERROR: something is wrong with your spreadsheet layout'
+            print ('ERROR: something is wrong with your spreadsheet layout')
             return -1
         
         elif self.column_or_row_ordered(row_list) == 'row':
@@ -72,7 +72,7 @@ class FileHandling:
             row_list    = [list(x) for x in zip(*row_list)]
                
         else:
-            print 'ERROR: something is wrong with your spreadsheet layout'
+            print ('ERROR: something is wrong with your spreadsheet layout')
             return -1
             
         
@@ -82,7 +82,7 @@ class FileHandling:
             datasets[column[0]] = column[1:]
     
         new_dataset = {}
-        for key, value in datasets.iteritems():
+        for key, value in datasets.items():
             
             #try to convert list to numpy float array        
             try:
@@ -91,7 +91,7 @@ class FileHandling:
             #when this fails there is possbily a empty cell
             except ValueError:
                 data_array = np.array([], dtype = np.float)
-                print 'Dataset contains empty cells, if this is ok than go on'
+                print ('Dataset contains empty cells, if this is ok than go on')
                 for item in value:
                     #just add the elements which are not empty                
                     if item:                
@@ -106,10 +106,10 @@ class FileHandling:
     def column_or_row_ordered(self, row_list):
     
         #if the first row consist of strings, these are probably the headers
-        if all(isinstance(n, basestring) for n in row_list[0]):
+        if all(isinstance(n, str) for n in row_list[0]):
             return 'column'
             
-        elif all(isinstance(n, basestring) for n in (zip(*row_list)[0])):
+        elif all(isinstance(n, str) for n in list(zip(*row_list))[0]):
             return 'row'    
         
         else:
@@ -122,7 +122,7 @@ class FileHandling:
         sheet = book.sheet_by_index(0)
         
         row_list = []
-        for row_ind in xrange(sheet.nrows):
+        for row_ind in range(sheet.nrows):
             row_values = sheet.row_values(row_ind)
             row_list.append(row_values)
         
@@ -148,7 +148,7 @@ class FileHandling:
 
     def save_dataset_to_file(self, data_dict, function_name):
             if self.file_type  == 'csv' :
-                print 'csv file export'
+                print ('csv file export')
                 filename = '_'.join((self.directory_name,function_name))
                 
                 self.save_data_to_csv(data_dict    , 
@@ -156,7 +156,7 @@ class FileHandling:
                                           filename          )           
                 
             elif self.file_type == 'xls' :
-                print 'xls file export'
+                print ('xls file export')
                 filename = '_'.join((self.directory_name,function_name))
                 
                 self.save_data_to_xls(data_dict    , 
@@ -164,15 +164,15 @@ class FileHandling:
                                           filename          )
                 
             elif self.file_type == 'xlsx':
-                print 'xlsx file export'
+                print ('xlsx file export')
                 #TODO: implement xlsx export
             else:
-                print 'ERROR: unknown export file type'
+                print ('ERROR: unknown export file type')
                 return -1
 
     def save_dataset_and_sem_to_file(self, data_dict, sem_dict, function_name):
         if self.file_type  == 'csv' :
-            print 'csv file export'
+            print ('csv file export')
             filename = '_'.join((self.directory_name,function_name))
             
             self.save_data_with_sem_to_csv(data_dict    , 
@@ -181,7 +181,7 @@ class FileHandling:
                                            filename          )           
             
         elif self.file_type == 'xls' :
-            print 'xls file export'
+            print ('xls file export')
         
             filename = '_'.join((self.directory_name,function_name))
                     
@@ -191,10 +191,10 @@ class FileHandling:
                                            filename          )
             
         elif self.file_type == 'xlsx':
-            print 'xlsx file export'
+            print ('xlsx file export')
             #TODO: implement xlsx export
         else:
-            print 'ERROR: unknown export file type'
+            print ('ERROR: unknown export file type')
             return -1
 
 
@@ -393,7 +393,7 @@ class FileHandling:
     
         
         export_list = []
-        for key, value in dict.iteritems():
+        for key, value in dict.items():
             export_list.append([key,value])
         
         
@@ -414,7 +414,7 @@ class FileHandling:
     
         
         export_list = []
-        for key, value in dict.iteritems():
+        for key, value in dict.items():
             export_list.append([key,value])
         
         worksheetname = self.directory_name
@@ -493,7 +493,7 @@ class Bootstrapit:
             = self.get_average_bootstrapped_data()
             
         averaged_data = {}        
-        for key, values in averaged_bootstrapped.iteritems():
+        for key, values in averaged_bootstrapped.items():
             averaged_data[key]  =  np.mean(values, axis=0)
         
         
@@ -511,7 +511,7 @@ class Bootstrapit:
             
                                                   
         elif self.fh.use_file and not self.use_sem:
-            self.fh.save_daset_to_file( averaged_data          , 
+            self.fh.save_dataset_to_file( averaged_data          , 
                                           'bootstrapped_average' )
             return averaged_data
 
@@ -534,7 +534,7 @@ class Bootstrapit:
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
-        for p in itertools.permutations(averaged_bootstrapped.iteritems() , 2):
+        for p in itertools.permutations(averaged_bootstrapped.items() , 2):
             
         #compare each permutation of averaged bootstraped value with eachother    
             average_comparison    = p[0][1] < p[1][1] 
@@ -560,7 +560,7 @@ class Bootstrapit:
         #filter out the signifiant comparisons
         if self.use_significance_sort:
             significant_comparison_probabilities = {}
-            for  comparison, probability in comparison_probabilities.iteritems():
+            for  comparison, probability in comparison_probabilities.items():
                 if (probability <= self.significance_threshold):
                     significant_comparison_probabilities[comparison] = probability                
                         
@@ -596,7 +596,7 @@ class Bootstrapit:
               self.fh.save_dataset_to_file(ranking_average    ,  
                                             'ranking_results'  ) 
     
-        print ranking_average
+        print (ranking_average)
 
 
 
@@ -609,7 +609,7 @@ class Bootstrapit:
         reference_avg                  = {}
         
         #normalise the reference dataset
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
             if key == reference_name:
                 averaged_bootstrapped_datasets[key] \
                     = np.average(bootstrapped_data_2D_Array, axis = 0)
@@ -621,7 +621,7 @@ class Bootstrapit:
                 
                 
         #normalise every other dataset based on the average of the reference dset       
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
             if key != reference_name:
                 reference[key] = bootstrapped_data_2D_Array                   \
                                / averaged_bootstrapped_datasets[reference_name]
@@ -636,7 +636,7 @@ class Bootstrapit:
         
         #average the normalised bootstrapped datasets
         total_average_dataset = {}
-        for key, bootstrapped_data_1D_Array in reference_avg.iteritems():
+        for key, bootstrapped_data_1D_Array in reference_avg.items():
             total_average_dataset[key] = np.average(bootstrapped_data_1D_Array)
         
         #File export decisions
@@ -678,7 +678,7 @@ class Bootstrapit:
         running_array_index = 0
     
         #this is by far not an efficiant or readable solution. But functional at the moment
-        for key, average_bootstrapped_data in bootstrapped_averaged_dataset.iteritems():
+        for key, average_bootstrapped_data in bootstrapped_averaged_dataset.items():
             averaged_bootstrapped_2D_Array[:,running_array_index] = average_bootstrapped_data
             key_order_list.append(key)
             running_array_index = running_array_index + 1
@@ -697,7 +697,7 @@ class Bootstrapit:
         
         #create dictionary with the mean value of all ranks for each dataset
         averaged_rank_bootstrapped_dataset = {}
-        for key, ranked_array in ranked_dataset.iteritems():
+        for key, ranked_array in ranked_dataset.items():
             averaged_rank_bootstrapped_dataset[key]  =  np.mean(ranked_array, axis=0)
             
         return averaged_rank_bootstrapped_dataset
@@ -706,7 +706,7 @@ class Bootstrapit:
         self.bootstrapped_datasets = {}
     
         #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
-        for key, data in dataset.iteritems():
+        for key, data in dataset.items():
             self.bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), self.number_of_resamples ) * len(data) ))]
         
         return self.bootstrapped_datasets
@@ -718,7 +718,7 @@ class Bootstrapit:
         #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
         averaged_bootstrapped_datasets = {}
     
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
             averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis = 0)
             
         return averaged_bootstrapped_datasets
@@ -726,10 +726,10 @@ class Bootstrapit:
     def get_standard_error_of_the_mean(self):
         
         sem_results = {}    
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.iteritems():
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
             sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
         
-        for key, bootstrapped_data_2D_Array in sem_results.iteritems():
+        for key, bootstrapped_data_2D_Array in sem_results.items():
             sem_results[key] = np.mean(bootstrapped_data_2D_Array)
             
         return sem_results
@@ -847,7 +847,7 @@ def plot_barchart(dataset, significance_dataset, plot_order):
     ax.set_title('Bootstrapping Results Fibrosis')
 
         #inter group signifikance and in group significance  
-    for key, probability in significance_dataset.iteritems():
+    for key, probability in significance_dataset.items():
         compared_dataset_names = key.split(' < ')
         
         #serch key pair in group        
@@ -863,8 +863,8 @@ def plot_barchart(dataset, significance_dataset, plot_order):
                     y_max = max( dataset[compared_dataset_names[0]], dataset[compared_dataset_names[1]] ) + 0.35 # TODO: create constant for 0.35 offset
                     y_min = min( dataset[compared_dataset_names[0]], dataset[compared_dataset_names[1]] ) + 0.35
                     distance = abs( plot_order.index(compared_dataset_names[0]) -  plot_order.index(compared_dataset_names[1]) )
-                    print bar_select_counter
-                    print compared_dataset_names[0]
+                    print (bar_select_counter)
+                    print (compared_dataset_names[0])
                     ax.annotate("", 
                                 xy=(bar_select_counter+0.0, y_max)                                                , #first point
                                 xycoords='data'                                                                    ,
@@ -888,7 +888,7 @@ def plot_barchart(dataset, significance_dataset, plot_order):
             for rect in barchart:               
                 if label_select_counter == ( ( (position_key2[0] + 1)  *  (position_key2[1] + 1) ) - 1 ):
                     #FIXME hashtags should just be printed once
-                    print label_select_counter
+                    print (label_select_counter)
                     height = rect.get_height()
                     ax.text(rect.get_x() + rect.get_width()/2., 1.025*height,
                     hashtags(probability),
