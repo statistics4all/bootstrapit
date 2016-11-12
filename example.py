@@ -39,7 +39,7 @@ correctly.
 # moment.
 
 
-analysis_1 = Bootstrapit('inputrow.xlsx'               , 
+analysis_1 = Bootstrapit('flicker.xlsx'               , 
                          number_of_resamples   = 10000 )
 
 
@@ -52,16 +52,9 @@ analysis_1 = Bootstrapit('inputrow.xlsx'               ,
 # If you want the same order as in the input file, simply delete these lines
 # and set export_order_list = []
 
-export_order_list        = ['WTY'   , #First
-                            'WTSO'  , 
-                            'WTTO'  , 
-                            'WTRO'  , 
-                            'MKOY'  , 
-                            'MKOSO' , 
-                            'MKOTO' , 
-                            'MCKY'  , 
-                            'MCKSO' , 
-                            'MCKTO' ] #Last
+export_order_list        = ['Brown' , #First
+                            'Green' , 
+                            'Blue'  ] #Last
                             
                             
 analysis_1.file_export_config( store_data            = True                 ,
@@ -103,7 +96,7 @@ analysis_1.get_bootstrapped_mean()
 analysis_1.get_bootstrapped_median() 
 
 # get relative mean
-analysis_1.get_normalised_bootstrapped_mean( reference_name = 'WTY' )
+analysis_1.get_normalised_bootstrapped_mean( reference_name = 'Brown' )
 
 # Compare the different mouse groups and compute the probabilites
 
@@ -118,6 +111,7 @@ analysis_1.get_ranking()
 
 
 #simple barchart example
+#FIXME: something is wrong bootstrap and average original give same result values
 
 # get mean
 mean = analysis_1.get_bootstrapped_mean()
@@ -125,15 +119,18 @@ mean = analysis_1.get_bootstrapped_mean()
 # set plot order the same as export order
 plot_order = export_order_list
 
-#plot barchart of means
+#plot barchart of bootstrapped means
 plot_barchart(mean, plot_order, ylabel = 'mean')
 
 
+# for compoarison plot barchart of original mean
 
+avgDict = {}
+for eye_colour, values in analysis_1.original_data.items():
+    # 
+    avgDict[eye_colour] = np.mean(values)
 
-
-
-
+plot_barchart(avgDict, plot_order, ylabel = 'original mean')
 
 
 

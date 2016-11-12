@@ -856,16 +856,16 @@ def plot_barchart(dataset, plot_order, ylabel=''):
         my_colors.append(tableau20[index])
     
     
-    barchart = ax.bar( range( len(dataset) ), data, color=my_colors)
+    barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
     # TODO: alignment looks to irregular, search for different solution
-    plt.xticks( range( len(dataset) ) , plot_order, ha = 'left', rotation = 45)
+    plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
     ax.set_ylabel(ylabel)
     
     #add value label to each bar   
     for rect in barchart:
         height = rect.get_height()
         ax.text(rect.get_x() + rect.get_width()/2., height - 0.25,
-            '%0.1f' % height,
+            '%0.3f' % height,
             ha='center', va='bottom')
     
   
