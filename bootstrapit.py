@@ -818,10 +818,6 @@ def hashtags(p):
     else:
         return "-"
 
-#bootstrapping
-
-
-
 
 #plotting
 tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
@@ -844,7 +840,54 @@ for i in range(len(tableau20blind)):
     tableau20blind[i] = (r / 255., g / 255., b / 255.)
 
 
-def plot_barchart(dataset, significance_dataset, plot_order):
+def plot_barchart(dataset, plot_order, ylabel=''):
+    
+    #sort according to plot_order
+    data = []
+    for name in plot_order:
+        data.append(dataset.get(name))  
+        
+    fig = plt.figure(facecolor='white')
+    ax = fig.add_subplot(111)
+    
+    # set color sequence using tableau20 colours
+    my_colors = []
+    for index in range(len(dataset)):
+        my_colors.append(tableau20[index])
+    
+    
+    barchart = ax.bar( range( len(dataset) ), data, color=my_colors)
+    # TODO: alignment looks to irregular, search for different solution
+    plt.xticks( range( len(dataset) ) , plot_order, ha = 'left', rotation = 45)
+    ax.set_ylabel(ylabel)
+    
+    #add value label to each bar   
+    for rect in barchart:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., height - 0.25,
+            '%0.1f' % height,
+            ha='center', va='bottom')
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+#this is only for experimental trials and not functional   
+def plot_barchart_sign(dataset, significance_dataset, plot_order):
     
     #sort according to plot_order
     data = []
@@ -927,17 +970,8 @@ def find_name_position(name):
                 return first_key_index
     else:
         return(None)
-        
+    
 
-
-
-def value_label(rects):
-    # attach some text labels
-    for rect in rects:
-        height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
-                '%0.1f' % height,
-                ha='center', va='bottom')
 
 def significance_labeling_inter_group(rects, p_value):
     # attach some text labels

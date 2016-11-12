@@ -113,9 +113,20 @@ analysis_1.use_significance_sort  = True
 analysis_1.significance_threshold = 0.05
 analysis_1.get_value_comparison_by_size() 
 
-
 #get ranking
 analysis_1.get_ranking()
+
+
+#simple barchart example
+
+# get mean
+mean = analysis_1.get_bootstrapped_mean()
+
+# set plot order the same as export order
+plot_order = export_order_list
+
+#plot barchart of means
+plot_barchart(mean, plot_order, ylabel = 'mean')
 
 
 
