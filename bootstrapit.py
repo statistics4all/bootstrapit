@@ -91,7 +91,7 @@ class FileHandling:
             #when this fails there is possbily a empty cell
             except ValueError:
                 data_array = np.array([], dtype = np.float)
-                print ('Dataset contains empty cells, if this is ok than go on')
+                print ('Dataset contains empty cells, if this is ok go on')
                 for item in value:
                     #just add the elements which are not empty                
                     if item:                
@@ -523,9 +523,22 @@ class Bootstrapit:
                 return averaged_data                                 
         
 
+    def get_bootstrapped_median( self ): 
+        
+        median_bootstrapped \
+            = self.get_median_bootstrapped_data()
+            
+        median_data = {}        
+        for key, values in median_bootstrapped.items():
+            median_data[key]  =  np.median(values, axis=0)
+                   
+        self.fh.save_dataset_to_file( median_data          , 
+                                    'bootstrapped_average' )
+         
+        return median_data 
 
 
-
+        
     def get_value_comparison_by_size( self ):
     
         #get comparison smaller than all permutations
@@ -573,11 +586,6 @@ class Bootstrapit:
     
         return comparison_probabilities, significant_comparison_probabilities 
     
-        
-        
-
-
-
         
 
     def get_ranking( self ):
@@ -722,6 +730,16 @@ class Bootstrapit:
             averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis = 0)
             
         return averaged_bootstrapped_datasets
+        
+    def get_median_bootstrapped_data(self):
+        
+        #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
+        median_bootstrapped_datasets = {}
+    
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
+            median_bootstrapped_datasets[key] = np.median(bootstrapped_data_2D_Array, axis = 0)
+            
+        return median_bootstrapped_datasets
 
     def get_standard_error_of_the_mean(self):
         

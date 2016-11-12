@@ -52,7 +52,8 @@ analysis_1 = Bootstrapit('inputrow.xlsx'               ,
 # exactly the same as in your data file, otherwise it will crash the program.
 # If you want the same order as in the input file, simply delete these lines.
 
-#TODO: add check export order functionality
+#TODO: add check export order functionality and exlude this feature from first 
+#release to enhance ease of use
 
 export_order_list        = ['WTY'   , #First
                             'WTSO'  , 
@@ -99,6 +100,9 @@ what is done in the background and how you can interpret your data.
 analysis_1.use_sem = False
 
 analysis_1.get_bootstrapped_mean()
+
+#get median
+analysis_1.get_bootstrapped_median() 
 
 # get relative average
 analysis_1.get_normalised_bootstrapped_mean( reference_name = 'WTY' )
