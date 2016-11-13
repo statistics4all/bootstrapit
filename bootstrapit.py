@@ -867,7 +867,7 @@ def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
     #add value label to each bar   
     for rect in barchart:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., height - 0.25,
+        ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
             '%0.3f' % height,
             ha='center', va='bottom')
     
