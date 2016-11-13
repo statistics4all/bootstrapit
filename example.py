@@ -39,6 +39,11 @@ correctly.
 # moment.
 
 
+
+"""
+Example: The effect of iris colour in critical flicker frequency (CFF)
+"""
+
 analysis_1 = Bootstrapit('flicker.xlsx'               , 
                          number_of_resamples   = 10000 )
 
@@ -111,26 +116,21 @@ analysis_1.get_ranking()
 
 
 #simple barchart example
-#FIXME: something is wrong bootstrap and average original give same result values
 
-# get mean
-mean = analysis_1.get_bootstrapped_mean()
+
+mean   = analysis_1.get_bootstrapped_mean()
+median = analysis_1.get_bootstrapped_median() 
+rank   = analysis_1.get_ranking()
 
 # set plot order the same as export order
 plot_order = export_order_list
 
-#plot barchart of bootstrapped means
-plot_barchart(mean, plot_order, ylabel = 'mean')
+#plot barcharts
+plot_barchart(mean  , plot_order, xlabel = 'eye colour', ylabel = 'mean'      )
+plot_barchart(median, plot_order, xlabel = 'eye colour', ylabel = 'median'    )
+plot_barchart(rank  , plot_order, xlabel = 'eye colour', ylabel = 'rank mean' )
 
 
-# for compoarison plot barchart of original mean
-
-avgDict = {}
-for eye_colour, values in analysis_1.original_data.items():
-    # 
-    avgDict[eye_colour] = np.mean(values)
-
-plot_barchart(avgDict, plot_order, ylabel = 'original mean')
 
 
 

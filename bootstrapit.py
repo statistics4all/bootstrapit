@@ -604,7 +604,7 @@ class Bootstrapit:
               self.fh.save_dataset_to_file(ranking_average    ,  
                                             'ranking_results'  ) 
     
-        print (ranking_average)
+        return ranking_average
 
 
 
@@ -840,7 +840,7 @@ for i in range(len(tableau20blind)):
     tableau20blind[i] = (r / 255., g / 255., b / 255.)
 
 
-def plot_barchart(dataset, plot_order, ylabel=''):
+def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
     
     #sort according to plot_order
     data = []
@@ -859,6 +859,9 @@ def plot_barchart(dataset, plot_order, ylabel=''):
     barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
     # TODO: alignment looks to irregular, search for different solution
     plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
+    
+    #set axis labels
+    ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     
     #add value label to each bar   
