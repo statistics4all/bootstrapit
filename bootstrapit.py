@@ -16,9 +16,6 @@ from xlutils.copy import copy #replace with already installed package
 import os
 
 
-
-#TODO create a class called bootstrapit with parameters
-#TODO create a class called file handling used for import and export of files
 #TODO create a class called plotting for data visualisation
 
 #==============================================================================
@@ -424,8 +421,8 @@ class FileHandling:
             book  = xlwt.Workbook(encoding="utf-8")
             sheet = book.add_sheet(worksheetname)
         elif mode == 'edit':
-            rb = xlrd.open_workbook(filename)
-            book = copy(rb)
+            rb    = xlrd.open_workbook(filename)
+            book  = copy(rb)  #TODO: exchange xlutils.copy with another standard anaconda library
             sheet = book.get_sheet(0)
         else:
             "Ooops: This xls mode is not known, sorry!!!"            
@@ -841,6 +838,11 @@ for i in range(len(tableau20blind)):
 
 
 def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
+    """
+    Barchart plots the input dataset dictionary according to the key order in 
+    the input plot_order variable. It also plots the value of the specific key
+    above the center of the corresponding bar.
+    """
     
     #sort according to plot_order
     data = []
@@ -892,23 +894,7 @@ def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
 #this is only for experimental trials and not functional   
 def plot_barchart_sign(dataset, significance_dataset, plot_order):
     
-    #sort according to plot_order
-    data = []
-    for name in plot_order:
-        data.append(dataset.get(name))
-           
-    fig = plt.figure(facecolor='white')
-    ax = fig.add_subplot(111)
-    
-    my_colors = []
-    
-    for index in range(len(group_list[0])):
-        my_colors.append(tableau20[index])
-    
-    barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)    
-    plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
-    ax.set_ylabel('Rank')
-    ax.set_title('Bootstrapping Results Fibrosis')
+
 
         #inter group signifikance and in group significance  
     for key, probability in significance_dataset.items():

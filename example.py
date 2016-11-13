@@ -80,8 +80,8 @@ to compare the results with other statistical analysis methods.
 Features:
 - mean
 - median
-- relative average (normalised to a defined group of the dataset)
-- ranking (ranking experiment, which ranks the data according to size)
+- relative mean (normalised to a defined group of the dataset)
+- ranking (ranking experiment, which ranks the data according to its values)
 - comparisons (gives us probabilities which can be used for significance tests)
 
 These features have an individual description. So you can understand in detail
