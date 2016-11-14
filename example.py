@@ -107,9 +107,6 @@ analysis_1.get_normalised_bootstrapped_mean( reference_name = 'Brown' )
 analysis_1.get_ranking()
 
 
-
-
-
 #simple barchart example ------------------------------------------------------
 
 mean   = analysis_1.get_bootstrapped_mean()
@@ -120,9 +117,9 @@ rank   = analysis_1.get_ranking()
 plot_order = export_order_list
 
 #plot barcharts
-plot_barchart(mean  , plot_order, xlabel = 'eye colour', ylabel = 'mean'      )
-plot_barchart(median, plot_order, xlabel = 'eye colour', ylabel = 'median'    )
-plot_barchart(rank  , plot_order, xlabel = 'eye colour', ylabel = 'rank mean' )
+plot_barchart(mean  , plot_order, title = 'mean'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+plot_barchart(median, plot_order, title = 'median', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+plot_barchart(rank  , plot_order, title = 'rank'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
 
 
 

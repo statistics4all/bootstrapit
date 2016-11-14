@@ -840,7 +840,7 @@ for i in range(len(tableau20blind)):
     tableau20blind[i] = (r / 255., g / 255., b / 255.)
 
 
-def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
+def plot_barchart(dataset, plot_order, title = '', xlabel = '', ylabel = ''):
     """
     Barchart plots the input dataset dictionary according to the key order in 
     the input plot_order variable. It also plots the value of the specific key
@@ -867,6 +867,7 @@ def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
     plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
     
     #set axis labels
+    ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     
