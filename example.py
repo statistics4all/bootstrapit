@@ -94,29 +94,23 @@ what is done in the background and how you can interpret your data.
 #Works only for get mean at the moment value not for referenced/normalised mean.
 analysis_1.use_sem = False
 
-# get mean
+# get mean --------------------------------------------------------------------
 analysis_1.get_bootstrapped_mean()
 
-#get median
+#get median -------------------------------------------------------------------
 analysis_1.get_bootstrapped_median() 
 
-# get relative mean
+# get relative mean -----------------------------------------------------------
 analysis_1.get_normalised_bootstrapped_mean( reference_name = 'Brown' )
 
-# Compare the different mouse groups and compute the probabilites
-
-#significance level configuration gives you an additional exported row which
-#shows you only the comparisons which are significant to your threshold
-analysis_1.use_significance_sort  = True
-analysis_1.significance_threshold = 0.05
-analysis_1.get_value_comparison_by_size() 
-
-#get ranking
+#get ranking ------------------------------------------------------------------
 analysis_1.get_ranking()
 
 
-#simple barchart example
 
+
+
+#simple barchart example ------------------------------------------------------
 
 mean   = analysis_1.get_bootstrapped_mean()
 median = analysis_1.get_bootstrapped_median() 
@@ -134,5 +128,17 @@ plot_barchart(rank  , plot_order, xlabel = 'eye colour', ylabel = 'rank mean' )
 
 
 
+#==============================================================================
+# Experimental Code
+#==============================================================================
+
+# Compare the different mouse groups and compute the probabilites
+
+#significance level configuration gives you an additional exported row which
+#shows you only the comparisons which are significant to your threshold
+#NOTE: THIS FEATURE IS EXPERIMENTAL
+analysis_1.use_significance_sort  = True
+analysis_1.significance_threshold = 0.95
+analysis_1.get_value_comparison_by_size() 
 
 

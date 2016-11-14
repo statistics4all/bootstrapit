@@ -572,16 +572,19 @@ class Bootstrapit:
             significant_comparison_probabilities = {}
             for  comparison, probability in comparison_probabilities.items():
                 if (probability <= self.significance_threshold):
-                    significant_comparison_probabilities[comparison] = probability                
+                    significant_comparison_probabilities[comparison] = probability
+
+                          
                         
             if self.fh.use_file:      
                 self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
                                                 'comparison_by_size_results',
                                                 column_offset = 3           ,     
                                                 mode = 'edit') 
-
+            
+            return comparison_probabilities, significant_comparison_probabilities
     
-        return comparison_probabilities, significant_comparison_probabilities 
+        return comparison_probabilities
     
         
 
@@ -857,8 +860,9 @@ def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
     for index in range(len(dataset)):
         my_colors.append(tableau20[index])
     
-    
+    #plot barchart
     barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
+    
     # TODO: alignment looks to irregular, search for different solution
     plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
     
@@ -877,10 +881,50 @@ def plot_barchart(dataset, plot_order, xlabel = '', ylabel = ''):
     
     
     
+def plot_barchart_experimental(dataset          , 
+                               plot_order       , 
+                               comparisons = [] , #used for significance
+                               reference = ''   , 
+                               xlabel = ''      , 
+                               ylabel = ''      ):
+    """
+    Barchart plots the input dataset dictionary according to the key order in 
+    the input plot_order variable. It also plots the value of the specific key
+    above the center of the corresponding bar.
+    """
     
+    #sort according to plot_order
+    data = []
+    for name in plot_order:
+        data.append(dataset.get(name))  
+        
+    fig = plt.figure(facecolor='white')
+    ax = fig.add_subplot(111)
     
+    # set color sequence using tableau20 colours
+    my_colors = []
+    for index in range(len(dataset)):
+        my_colors.append(tableau20[index])
     
+    #plot barchart
+    barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
     
+    # TODO: alignment looks to irregular, search for different solution
+    plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
+    
+    #set axis labels
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    
+    #add value label to each bar   
+    for rect in barchart:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
+            '%0.3f' % height,
+            ha='center', va='bottom')    
+
+    
+    #take the comparison statistic
     
     
     
