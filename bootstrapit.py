@@ -33,7 +33,7 @@ class Bootstrapit:
       
         self.fh  = FileHandling()
         self.original_data, self.export_order = self.fh.import_spreadsheet(filename)
-        self.bootstrapped_data   = self.get_resampled_datasets(self.original_data)
+        self.bootstrapped_data   = self.__get_resampled_datasets(self.original_data)
  
     def file_export_config(self                                         ,
                            store_data            = True                 ,
@@ -69,7 +69,7 @@ class Bootstrapit:
     def get_bootstrapped_mean( self ):
         
         averaged_bootstrapped \
-            = self.get_average_bootstrapped_data()
+            = self.__get_average_bootstrapped_data()
             
         averaged_data = {}        
         for key, values in averaged_bootstrapped.items():
@@ -78,7 +78,7 @@ class Bootstrapit:
         
         
         standard_error_mean \
-            = self.get_standard_error_of_the_mean()
+            = self.__get_standard_error_of_the_mean()
         
         
         #File export decisions
@@ -105,7 +105,7 @@ class Bootstrapit:
     def get_bootstrapped_median( self ): 
         
         median_bootstrapped \
-            = self.get_median_bootstrapped_data()
+            = self.__get_median_bootstrapped_data()
             
         median_data = {}        
         for key, values in median_bootstrapped.items():
@@ -122,7 +122,7 @@ class Bootstrapit:
     
         #get comparison smaller than all permutations
         averaged_bootstrapped\
-            = self.get_average_bootstrapped_data()
+            = self.__get_average_bootstrapped_data()
         
         comparison_probabilities = {}
         #maybe use itertools-combinations here
@@ -173,14 +173,14 @@ class Bootstrapit:
     def get_ranking( self ):
     
         averaged_bootstrapped \
-            = self.get_average_bootstrapped_data()
+            = self.__get_average_bootstrapped_data()
         
         ranked_bootstrapped_dataset \
-            = self.get_ranking_by_size( averaged_bootstrapped          , 
+            = self.__get_ranking_by_size( averaged_bootstrapped          , 
                                         self.number_of_resamples )
         
         ranking_average \
-            = self.get_mean_after_ranking(ranked_bootstrapped_dataset)
+            = self.__get_mean_after_ranking(ranked_bootstrapped_dataset)
         
         if self.fh.use_file:
               self.fh.save_dataset_to_file(ranking_average    ,  
@@ -252,13 +252,10 @@ class Bootstrapit:
         return total_average_dataset, standard_error_mean
            
 
+#Private methods
+#----------------------------------------------------------------------------------------------------------
 
-#==============================================================================
-# helper functions Bootstrapit TODO: should all be set to private "__"
-#==============================================================================
-
-
-    def get_ranking_by_size(self, bootstrapped_averaged_dataset, number_of_resamples):
+    def __get_ranking_by_size(self, bootstrapped_averaged_dataset, number_of_resamples):
         #rank the averaged datasets accroding to their size compared to the other mouse datasets
         #smallest --> lowest rank
         #TODO: add option for biggest size lowest rank
@@ -283,7 +280,7 @@ class Bootstrapit:
             
         return ranked_averaged_bootstrapped_dataset
          
-    def get_mean_after_ranking(self, ranked_dataset):
+    def __get_mean_after_ranking(self, ranked_dataset):
         
         #create dictionary with the mean value of all ranks for each dataset
         averaged_rank_bootstrapped_dataset = {}
@@ -292,7 +289,7 @@ class Bootstrapit:
             
         return averaged_rank_bootstrapped_dataset
 
-    def get_resampled_datasets(self, dataset):
+    def __get_resampled_datasets(self, dataset):
         self.bootstrapped_datasets = {}
     
         #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
@@ -303,7 +300,7 @@ class Bootstrapit:
 
 
 
-    def get_average_bootstrapped_data(self):
+    def __get_average_bootstrapped_data(self):
         
         #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
         averaged_bootstrapped_datasets = {}
@@ -313,7 +310,7 @@ class Bootstrapit:
             
         return averaged_bootstrapped_datasets
         
-    def get_median_bootstrapped_data(self):
+    def __get_median_bootstrapped_data(self):
         
         #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
         median_bootstrapped_datasets = {}
@@ -323,7 +320,7 @@ class Bootstrapit:
             
         return median_bootstrapped_datasets
 
-    def get_standard_error_of_the_mean(self):
+    def __get_standard_error_of_the_mean(self):
         
         sem_results = {}    
         for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
