@@ -111,8 +111,7 @@ class Bootstrapit:
         for key, values in median_bootstrapped.items():
             median_data[key]  =  np.median(values, axis=0)
                    
-        self.fh.save_dataset_to_file( median_data          , 
-                                    'bootstrapped_average' )
+        
          
         return median_data 
 

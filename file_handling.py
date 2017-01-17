@@ -9,10 +9,13 @@ import xlrd
 import xlwt
 from xlutils.copy import copy #replace with already installed package
 import os
+from enum import Enum
 
 
-
-
+class FileType(Enum):
+    CSV  = "csv"
+    XLS  = "xls"
+    XLSX = "xlsx"
 
 
 class FileHandling:
@@ -21,7 +24,7 @@ class FileHandling:
         self.use_directory       = False
         self.use_file            = False
         self. directory_name     = 'bootstrapit_results'
-        self.file_type           = 'xlsx'
+        self.file_type           = FileType.XLSX
         self.file_name           = 'bootstrapit_results'      
         self.export_order        = []
         
@@ -30,7 +33,10 @@ class FileHandling:
         #TODO: add gui prompt to choose directory    
         if not os.path.exists(self.directory_name):
             os.makedirs(self.directory_name)    
-        
+
+
+#import methods
+
     def import_spreadsheet(self, filename):
                
         filetype_check = filename.split('.')
@@ -136,79 +142,155 @@ class FileHandling:
                 
         return row_list
 
-    def save_dataset_to_file(self, data_dict, function_name):
-            if self.file_type  == 'csv' :
-                print ('csv file export')
-                filename = '_'.join((self.directory_name,function_name))
-                
-                self.save_data_to_csv(data_dict    , 
-                                          self.export_order , 
-                                          filename          )           
-                
-            elif self.file_type == 'xls' :
-                print ('xls file export')
-                filename = '_'.join((self.directory_name,function_name))
-                
-                self.save_data_to_xls(data_dict    , 
-                                          self.export_order , 
-                                          filename          )
-                
-            elif self.file_type == 'xlsx':
-                print ('xlsx file export')
-                #TODO: implement xlsx export
-            else:
-                print ('ERROR: unknown export file type')
-                return -1
+#-----------------------------------------------------------------------------------------------------
 
-    def save_dataset_and_sem_to_file(self, data_dict, sem_dict, function_name):
+#export methods
+# 1. get dictionary containing dictionaries.
+# 2. check export file extension.
+# 3. export dictionaries as rows with key as row name in the first column.
+
+    def export(self, data_dict):
+
         if self.file_type  == 'csv' :
             print ('csv file export')
-            filename = '_'.join((self.directory_name,function_name))
-            
-            self.save_data_with_sem_to_csv(data_dict    , 
-                                           sem_dict          , 
-                                           self.export_order , 
-                                           filename          )           
-            
+            filename = '_'.join((self.directory_name,function_name))              
+            self.export_csv(data_dict, self.export_order, filename)           
+                
         elif self.file_type == 'xls' :
             print ('xls file export')
-        
-            filename = '_'.join((self.directory_name,function_name))
-                    
-            self.save_data_with_sem_to_xls(data_dict         , 
-                                           sem_dict          , 
-                                           self.export_order , 
-                                           filename          )
-            
+            filename = '_'.join((self.directory_name,function_name))               
+            self.export_xls(data_dict, self.export_order, filename)
+                
         elif self.file_type == 'xlsx':
             print ('xlsx file export')
-            #TODO: implement xlsx export
+            self.export_xlsx(data_dict, self.export_order, filename) 
+
         else:
             print ('ERROR: unknown export file type')
             return -1
 
 
+     
+    def export_csv(self, data_dict, order_list, filename):
+        
+            csv_export_list     = []
+           
+            #add file type to file name string
+            filename = self.check_filename_for_slashes(filename)
+            filename = '.'.join((filename,'csv'))    
+            
+            #combine filename to a full file path
+            if self.use_directory:
+                self.create_folder()
+                filename = '/'.join((self.directory_name, filename))    
+            
 
-    def save_dictionary_to_csv(self, dict, order_list, filename):
+            #start first row with parameters
+            export_header = order_list.copy()
+            export_header.insert(0, "Parameter")
+
+            with open(filename, 'w', newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow (export_header)
+
+                for parameter, dictionary in data_dict.items():
+                    csv_export_list = []
+                    csv_export_list.append(parameter)
+
+                    #write dictionaries to list for easier export
+                    for name in order_list:
+                        csv_export_list.append(dictionary[name])
+      
+                    #check if there are more than one value in list to export
+                    if csv_export_list[1].size > 1:
+                        csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+                           
+                    #write data to file
+                    if csv_export_list[1].size > 1:
+                        writer.writerows( csv_export_list )
+                    else:
+                        writer.writerow ( csv_export_list )
+                     
+                               
+        
+    def export_xls(self       , 
+                         data_dict  , 
+                         order_list , 
+                         filename  ):
     
-        csv_export_list = []
+        csv_export_list     = []
+        
+        filename = self.check_filename_for_slashes(filename)
+        filename = '.'.join((filename,'xls'))    
+        
+        if self.use_directory:
+            self.create_folder()
+            filename = '/'.join((self.directory_name, filename))    
         
         for name in order_list:
-            csv_export_list.append( dict[name] )
-      
+            csv_export_list.append    ( data_dict[name] )
+            
+    
         #check if there are more than one value in list to export
         if csv_export_list[0].size > 1:
             csv_export_list = [list(x) for x in zip(*csv_export_list)]  
     
-    
-        with open(filename, 'wb') as f:
-            writer = csv.writer(f)
-            writer.writerow ( order_list       )
-            
+        excell_list = []
+        excell_list.append(order_list)
+        excell_list.append(csv_export_list)
+ 
+        worksheetname = self.directory_name
+        worksheetname = self.check_filename_for_slashes(worksheetname)    
+        
+        book = xlwt.Workbook(encoding="utf-8")
+        sheet = book.add_sheet(worksheetname)
+        for i, l in enumerate(excell_list):
+            for j, col in enumerate(l):
+                sheet.write(i, j, col)
+        
+        book.save(filename)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def save_dictionary_to_csv(self, dict, order_list, filename):
+           
+        for parameter, dictionary in self.dict.items():
+            csv_export_list = []
+
+            #write dictionaries to list for easier export
+            for name in order_list:
+                csv_export_list.append(dictionary[name])
+      
+            #check if there are more than one value in list to export
             if csv_export_list[0].size > 1:
-                writer.writerows( csv_export_list )
-            else:
-                writer.writerow ( csv_export_list )
+                csv_export_list = [list(x) for x in zip(*csv_export_list)]  
+        
+            with open(filename, 'wb') as f:
+                writer = csv.writer(f)
+                writer.writerow (order_list)
+            
+                if csv_export_list[0].size > 1:
+                    writer.writerows( csv_export_list )
+                else:
+                    writer.writerow ( csv_export_list )
+
+
+
+
+
     
     def check_filename_for_slashes(self, filename):
         filename = filename.replace('/',' ')
@@ -295,76 +377,7 @@ class FileHandling:
         
         book.save(filename)
     
-    def save_data_to_csv(self       , 
-                         data_dict  ,  
-                         order_list , 
-                         filename  ):
-        
-            csv_export_list     = []
-            
-            filename = self.check_filename_for_slashes(filename)
-            filename = '.'.join((filename,'csv'))    
-            
-            if self.use_directory:
-                self.create_folder()
-                filename = '/'.join((self.directory_name, filename))    
-            
-            for name in order_list:
-                csv_export_list.append    ( data_dict[name] )
-            
-            #check if there are more than one value in list to export
-            if csv_export_list[0].size > 1:
-                csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-        
-        
-            with open(filename, 'wb') as f:
-                writer = csv.writer(f)
-                writer.writerow ( order_list )
-                
-                if csv_export_list[0].size > 1:
-                    writer.writerows( csv_export_list )
-                else:
-                    writer.writerow ( csv_export_list )
-                
-                writer.writerow(csv_sem_export_list)
-        
-        
-    def save_data_to_xls(self       , 
-                         data_dict  , 
-                         order_list , 
-                         filename  ):
-    
-        csv_export_list     = []
-        
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'xls'))    
-        
-        if self.use_directory:
-            self.create_folder()
-            filename = '/'.join((self.directory_name, filename))    
-        
-        for name in order_list:
-            csv_export_list.append    ( data_dict[name] )
-            
-    
-        #check if there are more than one value in list to export
-        if csv_export_list[0].size > 1:
-            csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-    
-        excell_list = []
-        excell_list.append(order_list)
-        excell_list.append(csv_export_list)
- 
-        worksheetname = self.directory_name
-        worksheetname = self.check_filename_for_slashes(worksheetname)    
-        
-        book = xlwt.Workbook(encoding="utf-8")
-        sheet = book.add_sheet(worksheetname)
-        for i, l in enumerate(excell_list):
-            for j, col in enumerate(l):
-                sheet.write(i, j, col)
-        
-        book.save(filename)
+
 
 
 
