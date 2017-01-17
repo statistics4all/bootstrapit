@@ -170,26 +170,31 @@ class FileHandling:
             return -1
 
 
+
+    def __get_export_filepath(self, filename, file_extension):
+        #add file type to file name string
+        filename = self.check_filename_for_slashes(filename)
+        filename = '.'.join((filename, file_extension))    
+            
+        #combine filename to a full file path
+        if self.use_directory:
+             self.create_folder()
+             filename = '/'.join((self.directory_name, filename))  
+
+        return filename
      
+
     def export_csv(self, data_dict, order_list, filename):
         
             csv_export_list     = []
-           
-            #add file type to file name string
-            filename = self.check_filename_for_slashes(filename)
-            filename = '.'.join((filename,'csv'))    
-            
-            #combine filename to a full file path
-            if self.use_directory:
-                self.create_folder()
-                filename = '/'.join((self.directory_name, filename))    
-            
-
+            filepath = self.__get_export_filepath(filename, 'csv')
+                       
             #start first row with parameters
             export_header = order_list.copy()
             export_header.insert(0, "Parameter")
 
-            with open(filename, 'w', newline="") as f:
+            #open csv file and write data
+            with open(filepath, 'w', newline="") as f:
                 writer = csv.writer(f)
                 writer.writerow (export_header)
 
