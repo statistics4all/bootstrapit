@@ -170,20 +170,6 @@ class FileHandling:
             return -1
 
 
-
-    def __get_export_filepath(self, filename, file_extension):
-        #add file type to file name string
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename, file_extension))    
-            
-        #combine filename to a full file path
-        if self.use_directory:
-             self.create_folder()
-             filename = '/'.join((self.directory_name, filename))  
-
-        return filename
-     
-
     def export_csv(self, data_dict, order_list, filename):
         
             csv_export_list     = []
@@ -218,83 +204,61 @@ class FileHandling:
                      
                                
         
-    def export_xls(self       , 
-                         data_dict  , 
-                         order_list , 
-                         filename  ):
+    def export_xls(self, data_dict, order_list , filename):
     
         csv_export_list     = []
-        
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'xls'))    
-        
-        if self.use_directory:
-            self.create_folder()
-            filename = '/'.join((self.directory_name, filename))    
-        
-        for name in order_list:
-            csv_export_list.append    ( data_dict[name] )
-            
-    
-        #check if there are more than one value in list to export
-        if csv_export_list[0].size > 1:
-            csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-    
-        excell_list = []
-        excell_list.append(order_list)
-        excell_list.append(csv_export_list)
- 
+        filepath = self.__get_export_filepath(filename, 'xls')
+                       
+        #start first row with parameters
+        export_header = order_list.copy()
+        export_header.insert(0, "Parameter")
+
+        #open xls file and write data
         worksheetname = self.directory_name
         worksheetname = self.check_filename_for_slashes(worksheetname)    
         
         book = xlwt.Workbook(encoding="utf-8")
         sheet = book.add_sheet(worksheetname)
+        excell_list = []
+        excell_list.append(export_header)
+
+
+        for parameter, dictionary in data_dict.items():
+            xls_export_list = []
+            xls_export_list.append(parameter)
+
+            #write dictionaries to list for easier export
+            for name in order_list:
+                xls_export_list.append(dictionary[name])
+      
+            #check if there are more than one value in list to export
+            if xls_export_list[1].size > 1:
+                xls_export_list = [list(x) for x in zip(*xls_export_list)] 
+    
+            excell_list.append(xls_export_list)
+ 
         for i, l in enumerate(excell_list):
             for j, col in enumerate(l):
                 sheet.write(i, j, col)
         
-        book.save(filename)
+        book.save(filepath)
+    
+
+    def export_xlsx(self, data_dict, order_list , filename):
+        print("Export to xlsx not implemented!")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def save_dictionary_to_csv(self, dict, order_list, filename):
-           
-        for parameter, dictionary in self.dict.items():
-            csv_export_list = []
-
-            #write dictionaries to list for easier export
-            for name in order_list:
-                csv_export_list.append(dictionary[name])
-      
-            #check if there are more than one value in list to export
-            if csv_export_list[0].size > 1:
-                csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-        
-            with open(filename, 'wb') as f:
-                writer = csv.writer(f)
-                writer.writerow (order_list)
+    def __get_export_filepath(self, filename, file_extension):
+        #add file type to file name string
+        filename = self.check_filename_for_slashes(filename)
+        filename = '.'.join((filename, file_extension))    
             
-                if csv_export_list[0].size > 1:
-                    writer.writerows( csv_export_list )
-                else:
-                    writer.writerow ( csv_export_list )
+        #combine filename to a full file path
+        if self.use_directory:
+             self.create_folder()
+             filename = '/'.join((self.directory_name, filename))  
 
-
-
-
+        return filename
 
     
     def check_filename_for_slashes(self, filename):
@@ -302,90 +266,6 @@ class FileHandling:
         return filename
 
             
-            
-    def save_data_with_sem_to_csv(self       , 
-                                  data_dict  , 
-                                  sem_dict   , 
-                                  order_list , 
-                                  filename  ):
-    
-        csv_export_list     = []
-        csv_sem_export_list = []
-        
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'csv'))    
-        
-        if self.use_directory:
-            self.create_folder()
-            filename = '/'.join((self.directory_name, filename))    
-        
-        for name in order_list:
-            csv_export_list.append    ( data_dict[name] )
-            csv_sem_export_list.append( sem_dict[name]  )
-            
-    
-        #check if there are more than one value in list to export
-        if csv_export_list[0].size > 1:
-            csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-    
-    
-        with open(filename, 'wb') as f:
-            writer = csv.writer(f)
-            writer.writerow ( order_list )
-            
-            if csv_export_list[0].size > 1:
-                writer.writerows( csv_export_list )
-            else:
-                writer.writerow ( csv_export_list )
-            
-            writer.writerow(csv_sem_export_list)
-        
-        
-    def save_data_with_sem_to_xls(self , 
-                                  data_dict  , 
-                                  sem_dict   , 
-                                  order_list , 
-                                  filename  ):
-    
-        csv_export_list     = []
-        csv_sem_export_list = []
-        
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'xls')) 
-        
-        
-        if self.use_directory:
-            self.create_folder()
-            filename = '/'.join((self.directory_name, filename))    
-        
-        for name in order_list:
-            csv_export_list.append    ( data_dict[name] )
-            csv_sem_export_list.append( sem_dict[name]  )
-        
-        #check if there are more than one value in list to export
-        if csv_export_list[0].size > 1:
-            csv_export_list = [list(x) for x in zip(*csv_export_list)]  
-    
-        excell_list = []
-        excell_list.append(order_list)
-        excell_list.append(csv_export_list)
-        excell_list.append(csv_sem_export_list)
-        
-        worksheetname = self.directory_name
-        worksheetname = self.check_filename_for_slashes(worksheetname)    
-        
-        book = xlwt.Workbook(encoding="utf-8")
-        sheet = book.add_sheet(worksheetname)
-        for i, l in enumerate(excell_list):
-            for j, col in enumerate(l):
-                sheet.write(i, j, col)
-        
-        book.save(filename)
-    
-
-
-
-
 
     #TODO: integrate in general save storage function
     def save_unordered_dictionary_to_csv(self, dict, filename):

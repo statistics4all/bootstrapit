@@ -26,6 +26,12 @@ data_dict  = analysis_1.get_bootstrapped_mean()
 data_dict2 = analysis_1.get_bootstrapped_median() 
 data_dict = {'mean'  :data_dict, 
              'median':data_dict2}
-filename = "testfile"
 
-analysis_1.fh.export_csv(data_dict, export_order_list, filename)
+filename_csv = "testfile_csv"
+filename_xls = "testfile_xls"
+
+#test csv export
+analysis_1.fh.export_csv(data_dict, export_order_list, filename_csv)
+
+#test xls export
+analysis_1.fh.export_xls(data_dict, export_order_list, filename_xls)
