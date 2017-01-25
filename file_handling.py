@@ -43,27 +43,25 @@ class FileHandling:
         filetype_check = filename.split('.')
         filetype       = filetype_check[-1]
                    
-        if filetype == 'csv':
-            #call function parse csv
-            row_list = self.parse_csv(filename)
+        if filetype == FileType.CSV:
+            row_list = self.__parse_csv(filename)
         
-        elif (filetype == 'xls') or (filetype == 'xlsx'):
-            #call function pass xls
-            row_list = self.parse_xls_xlsx(filename)
+        elif (filetype == FileType.XLS) or (filetype == FileType.XLSX):
+            row_list = self.__parse_xls_xlsx(filename)
         
         else:
             print ('ERROR: wrong file type')
             return -1
-    
-        if self.column_or_row_ordered(row_list) == 'error':
+
+        if self.__column_or_row_ordered(row_list) == 'error':
             print ('ERROR: something is wrong with your spreadsheet layout')
             return -1
         
-        elif self.column_or_row_ordered(row_list) == 'row':
+        elif self.__column_or_row_ordered(row_list) == 'row':
             transposed_list = [list(x) for x in zip(*row_list)]        
             list_order      = transposed_list[0]
         
-        elif self.column_or_row_ordered(row_list) == 'column':
+        elif self.__column_or_row_ordered(row_list) == 'column':
             #transpose the lists
             list_order  = row_list[0]          
             row_list    = [list(x) for x in zip(*row_list)]
@@ -99,8 +97,7 @@ class FileHandling:
         #return dataset as dictionary and list order as list
         return new_dataset, list_order  
 
-
-    def column_or_row_ordered(self, row_list):
+    def __column_or_row_ordered(self, row_list):
     
         #if the first row consist of strings, these are probably the headers
         if all(isinstance(n, str) for n in row_list[0]):
@@ -112,8 +109,7 @@ class FileHandling:
         else:
             return 'error'
 
-
-    def parse_xls_xlsx(self, filename):
+    def __parse_xls_xlsx(self, filename):
     
         book  = xlrd.open_workbook(filename)
         sheet = book.sheet_by_index(0)
@@ -125,8 +121,7 @@ class FileHandling:
         
         return row_list
 
-
-    def parse_csv(self, filename):
+    def __parse_csv(self, filename):
         with open(filename) as csvfile:
                 
                 #check what delimiters the file uses
@@ -142,7 +137,6 @@ class FileHandling:
                     row_list.append(row)
                 
         return row_list
-
 
 
 #export methods 
