@@ -29,9 +29,13 @@ data_dict = {'mean'  :data_dict,
 
 filename_csv = "testfile_csv"
 filename_xls = "testfile_xls"
+filename_xlsx = "testfile_xlsx"
 
 #test csv export
 analysis_1.fh.export_csv(data_dict, export_order_list, filename_csv)
 
 #test xls export
 analysis_1.fh.export_xls(data_dict, export_order_list, filename_xls)
+
+#test xlsx export
+analysis_1.fh.export_xlsx(data_dict, export_order_list, filename_xlsx)

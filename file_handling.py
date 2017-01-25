@@ -8,6 +8,7 @@ import csv
 import xlrd
 import xlwt
 from xlutils.copy import copy #replace with already installed package
+import openpyxl
 import os
 from enum import Enum
 
@@ -206,7 +207,7 @@ class FileHandling:
         
     def export_xls(self, data_dict, order_list , filename):
     
-        csv_export_list     = []
+        xls_export_list     = []
         filepath = self.__get_export_filepath(filename, 'xls')
                        
         #start first row with parameters
@@ -243,9 +244,50 @@ class FileHandling:
         
         book.save(filepath)
     
-
     def export_xlsx(self, data_dict, order_list , filename):
-        print("Export to xlsx not implemented!")
+    
+            xlsx_export_list     = []
+            filepath = self.__get_export_filepath(filename, 'xlsx')
+                       
+            #start first row with parameters
+            export_header = order_list.copy()
+            export_header.insert(0, "Parameter")
+
+            #open xlsx file and write data
+            worksheetname = self.directory_name
+            worksheetname = self.check_filename_for_slashes(worksheetname)    
+        
+            #create xlsx workbook
+            book        = openpyxl.Workbook(encoding="utf-8")
+            sheet       = book.active
+            sheet.title = worksheetname
+
+            #initalise header parameter
+            excell_list = []
+            excell_list.append(export_header)
+
+
+            for parameter, dictionary in data_dict.items():
+                xls_export_list = []
+                xls_export_list.append(parameter)
+
+                #write dictionaries to list for easier export
+                for name in order_list:
+                    xls_export_list.append(dictionary[name])
+      
+                #check if there are more than one value in list to export
+                if xls_export_list[1].size > 1:
+                    xls_export_list = [list(x) for x in zip(*xls_export_list)] 
+    
+                excell_list.append(xls_export_list)
+ 
+            for i, l in enumerate(excell_list):
+                for col, value in enumerate(l):
+                    sheet.cell(row=i+1, column=col+1).value = value
+                    
+                            
+            book.save(filepath)
+
 
 
     def __get_export_filepath(self, filename, file_extension):
