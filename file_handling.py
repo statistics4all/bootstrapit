@@ -24,7 +24,7 @@ class FileHandling:
         
         self.use_directory       = False
         self.use_file            = False
-        self. directory_name     = 'bootstrapit_results'
+        self.directory_name     = 'bootstrapit_results'
         self.file_type           = FileType.XLSX
         self.file_name           = 'bootstrapit_results'      
         self.export_order        = []
@@ -143,35 +143,32 @@ class FileHandling:
                 
         return row_list
 
-#-----------------------------------------------------------------------------------------------------
 
-#export methods
-# 1. get dictionary containing dictionaries.
-# 2. check export file extension.
-# 3. export dictionaries as rows with key as row name in the first column.
+
+#export methods 
 
     def export(self, data_dict):
 
-        if self.file_type  == 'csv' :
+        if self.file_type  == FileType.CSV :
             print ('csv file export')
-            filename = '_'.join((self.directory_name,function_name))              
-            self.export_csv(data_dict, self.export_order, filename)           
+            #filename = '_'.join((self.directory_name,function_name))     #what is function name        
+            self.__export_csv(data_dict, self.export_order, self.file_name )           
                 
-        elif self.file_type == 'xls' :
+        elif self.file_type == FileType.XLS :
             print ('xls file export')
-            filename = '_'.join((self.directory_name,function_name))               
-            self.export_xls(data_dict, self.export_order, filename)
+            #filename = '_'.join((self.directory_name,function_name))               
+            self.__export_xls(data_dict, self.export_order, self.file_name )
                 
-        elif self.file_type == 'xlsx':
+        elif self.file_type == FileType.XLSX:
             print ('xlsx file export')
-            self.export_xlsx(data_dict, self.export_order, filename) 
+            #filename = '_'.join((self.directory_name,function_name)) 
+            self.__export_xlsx(data_dict, self.export_order, self.file_name) 
 
         else:
             print ('ERROR: unknown export file type')
             return -1
 
-
-    def export_csv(self, data_dict, order_list, filename):
+    def __export_csv(self, data_dict, order_list, filename):
         
             csv_export_list     = []
             filepath = self.__get_export_filepath(filename, 'csv')
@@ -202,10 +199,8 @@ class FileHandling:
                         writer.writerows( csv_export_list )
                     else:
                         writer.writerow ( csv_export_list )
-                     
-                               
-        
-    def export_xls(self, data_dict, order_list , filename):
+                                              
+    def __export_xls(self, data_dict, order_list , filename):
     
         xls_export_list     = []
         filepath = self.__get_export_filepath(filename, 'xls')
@@ -216,7 +211,7 @@ class FileHandling:
 
         #open xls file and write data
         worksheetname = self.directory_name
-        worksheetname = self.check_filename_for_slashes(worksheetname)    
+        worksheetname = self.__check_filename_for_slashes(worksheetname)    
         
         book = xlwt.Workbook(encoding="utf-8")
         sheet = book.add_sheet(worksheetname)
@@ -244,7 +239,7 @@ class FileHandling:
         
         book.save(filepath)
     
-    def export_xlsx(self, data_dict, order_list , filename):
+    def __export_xlsx(self, data_dict, order_list , filename):
     
             xlsx_export_list     = []
             filepath = self.__get_export_filepath(filename, 'xlsx')
@@ -255,7 +250,7 @@ class FileHandling:
 
             #open xlsx file and write data
             worksheetname = self.directory_name
-            worksheetname = self.check_filename_for_slashes(worksheetname)    
+            worksheetname = self.__check_filename_for_slashes(worksheetname)    
         
             #create xlsx workbook
             book        = openpyxl.Workbook(encoding="utf-8")
@@ -288,11 +283,9 @@ class FileHandling:
                             
             book.save(filepath)
 
-
-
     def __get_export_filepath(self, filename, file_extension):
         #add file type to file name string
-        filename = self.check_filename_for_slashes(filename)
+        filename = self.__check_filename_for_slashes(filename)
         filename = '.'.join((filename, file_extension))    
             
         #combine filename to a full file path
@@ -302,8 +295,7 @@ class FileHandling:
 
         return filename
 
-    
-    def check_filename_for_slashes(self, filename):
+    def __check_filename_for_slashes(self, filename):
         filename = filename.replace('/',' ')
         return filename
 
