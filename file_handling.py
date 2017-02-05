@@ -24,7 +24,7 @@ class FileHandling:
         
         self.use_directory       = False
         self.use_file            = False
-        self.directory_name     = 'bootstrapit_results'
+        self.directory_name      = 'bootstrapit_results'
         self.file_type           = FileType.XLSX
         self.file_name           = 'bootstrapit_results'      
         self.export_order        = []
@@ -38,15 +38,19 @@ class FileHandling:
 
 #import methods
 
+
+
     def import_spreadsheet(self, filename):
                
         filetype_check = filename.split('.')
         filetype       = filetype_check[-1]
+
+        
                    
-        if filetype == FileType.CSV:
+        if filetype == 'csv':
             row_list = self.__parse_csv(filename)
         
-        elif (filetype == FileType.XLS) or (filetype == FileType.XLSX):
+        elif (filetype == 'xls') or (filetype == 'xlsx'):
             row_list = self.__parse_xls_xlsx(filename)
         
         else:
@@ -294,6 +298,7 @@ class FileHandling:
         return filename
 
             
+
 
     #TODO: integrate in general save storage function
     def save_unordered_dictionary_to_csv(self, dict, filename):

@@ -65,45 +65,30 @@ class Bootstrapit:
         else:
             self.fh.export_order      = export_order               
     
-    
     def get_bootstrapped_mean( self ):
         
-        averaged_bootstrapped \
-            = self.__get_average_bootstrapped_data()
+        return_dict = {}
+
+        averaged_bootstrapped = self.__get_average_bootstrapped_data()
             
         averaged_data = {}        
         for key, values in averaged_bootstrapped.items():
             averaged_data[key]  =  np.mean(values, axis=0)
         
+        return_dict['mean'] = averaged_data    
+                 
+        standard_error_mean = self.__get_standard_error_of_the_mean()
+        return_dict['SEM'] = standard_error_mean         
         
-        
-        standard_error_mean \
-            = self.__get_standard_error_of_the_mean()
-        
-        
-        #File export decisions
-        if self.fh.use_file and self.use_sem:
-            self.fh.save_dataset_and_sem_to_file( averaged_data          , 
-                                                  standard_error_mean    , 
-                                                  'bootstrapped_average' )
-            return averaged_data, standard_error_mean
-            
-                                                  
-        elif self.fh.use_file and not self.use_sem:
-            self.fh.save_dataset_to_file( averaged_data          , 
-                                          'bootstrapped_average' )
-            return averaged_data
+        #File export 
+        self.fh.export(return_dict)
 
-        else:
-            
-            if self.use_sem:
-                return averaged_data, standard_error_mean
-            else:
-                return averaged_data                                 
-        
-
+        return return_dict
+                              
     def get_bootstrapped_median( self ): 
         
+        return_dict = {}
+
         median_bootstrapped \
             = self.__get_median_bootstrapped_data()
             
@@ -111,12 +96,15 @@ class Bootstrapit:
         for key, values in median_bootstrapped.items():
             median_data[key]  =  np.median(values, axis=0)
                    
+        return_dict['median'] = median_data          
         
+        #File export 
+        self.fh.export(return_dict)
+
+        return return_dict
          
         return median_data 
 
-
-        
     def get_value_comparison_by_size( self ):
     
         #get comparison smaller than all permutations
@@ -167,8 +155,6 @@ class Bootstrapit:
     
         return comparison_probabilities
     
-        
-
     def get_ranking( self ):
     
         averaged_bootstrapped \
@@ -186,8 +172,6 @@ class Bootstrapit:
                                             'ranking_results'  ) 
     
         return ranking_average
-
-
 
     def get_normalised_bootstrapped_mean( self , reference_name ):
         
@@ -296,8 +280,6 @@ class Bootstrapit:
             self.bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), self.number_of_resamples ) * len(data) ))]
         
         return self.bootstrapped_datasets
-
-
 
     def __get_average_bootstrapped_data(self):
         

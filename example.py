@@ -10,7 +10,7 @@ from bootstrapit import *
 Example: The effect of iris colour in critical flicker frequency (CFF)
 """
 
-analysis_1 = Bootstrapit('flicker.xlsx'               , 
+analysis_1 = Bootstrapit('flicker.xlsx'                , 
                          number_of_resamples   = 10000 )
 
 
@@ -20,7 +20,7 @@ export_order_list        = ['Brown' , #First
                             
                             
 analysis_1.file_export_config( store_data            = True                 ,
-                               export_file_type      = 'xls'                ,
+                               export_file_type      = FileType.XLSX        ,
                                export_directory_name = 'bootstrap_results'  ,
                                export_order           = export_order_list   )
 
