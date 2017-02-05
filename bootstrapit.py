@@ -65,6 +65,27 @@ class Bootstrapit:
         else:
             self.fh.export_order      = export_order               
     
+    def export(self, *export_datasets_dicts, filename = "bootstrapit_results.xlsx", order = []):
+        
+        merged_dict = self.__merge_dicts(*export_datasets_dicts)
+        
+        filetype_check = filename.split('.')
+        filetype       = filetype_check[-1]
+        filename       = filetype_check[0]
+        
+        if filetype == "xlsx":
+            self.fh.file_type = FileType.XLSX
+        elif filetype == "xls":
+            self.fh.file_type = FileType.XLS
+        elif filetype == "csv":
+            self.fh.file_type = FileType.CSV
+        else:
+            print("Error: Unsupported file type.")
+
+        self.fh.file_name    = filename
+        self.fh.export_order = order
+        self.fh.export(merged_dict)
+            
     def get_bootstrapped_mean( self ):
         
         return_dict = {}
@@ -79,9 +100,6 @@ class Bootstrapit:
                  
         standard_error_mean = self.__get_standard_error_of_the_mean()
         return_dict['SEM'] = standard_error_mean         
-        
-        #File export 
-        self.fh.export(return_dict)
 
         return return_dict
                               
@@ -98,12 +116,8 @@ class Bootstrapit:
                    
         return_dict['median'] = median_data          
         
-        #File export 
-        self.fh.export(return_dict)
-
         return return_dict
          
-        return median_data 
 
     def get_value_comparison_by_size( self ):
     
@@ -311,8 +325,13 @@ class Bootstrapit:
             sem_results[key] = np.mean(bootstrapped_data_2D_Array)
             
         return sem_results
+  
+    def __merge_dicts(self, *dict_args):
 
-
+        result = {}
+        for dictionary in dict_args:
+            result.update(dictionary)
+        return result
 
 
 

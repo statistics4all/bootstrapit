@@ -22,23 +22,15 @@ class FileType(Enum):
 class FileHandling:
     def __init__(self):
         
-        self.use_directory       = False
-        self.use_file            = False
+        self.use_directory       = True
+        self.use_file            = True
         self.directory_name      = 'bootstrapit_results'
         self.file_type           = FileType.XLSX
         self.file_name           = 'bootstrapit_results'      
         self.export_order        = []
         
-            
-    def create_folder(self):
-        #TODO: add gui prompt to choose directory    
-        if not os.path.exists(self.directory_name):
-            os.makedirs(self.directory_name)    
-
-
+           
 #import methods
-
-
 
     def import_spreadsheet(self, filename):
                
@@ -288,7 +280,7 @@ class FileHandling:
             
         #combine filename to a full file path
         if self.use_directory:
-             self.create_folder()
+             self.__create_folder()
              filename = '/'.join((self.directory_name, filename))  
 
         return filename
@@ -297,7 +289,9 @@ class FileHandling:
         filename = filename.replace('/',' ')
         return filename
 
-            
+    def __create_folder(self):  
+        if not os.path.exists(self.directory_name):
+            os.makedirs(self.directory_name)         
 
 
     #TODO: integrate in general save storage function
@@ -309,7 +303,7 @@ class FileHandling:
         filename = self.check_filename_for_slashes(filename)
         
         if self.use_directory:
-            self.create_folder()
+            self.__create_folder()
             filename = '/'.join((self.directory_name, filename))
     
         
@@ -330,7 +324,7 @@ class FileHandling:
         filename = self.check_filename_for_slashes(filename)
         
         if self.use_directory:
-            self.create_folder()
+            self.__create_folder()
             filename = '/'.join((self.directory_name, filename))
     
         
