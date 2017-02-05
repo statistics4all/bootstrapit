@@ -118,7 +118,6 @@ class Bootstrapit:
         
         return return_dict
          
-
     def get_value_comparison_by_size( self ):
     
         #get comparison smaller than all permutations
@@ -181,11 +180,11 @@ class Bootstrapit:
         ranking_average \
             = self.__get_mean_after_ranking(ranked_bootstrapped_dataset)
         
-        if self.fh.use_file:
-              self.fh.save_dataset_to_file(ranking_average    ,  
-                                            'ranking_results'  ) 
-    
-        return ranking_average
+
+        return_dict = {}
+        return_dict["ranking"] = ranking_average    
+             
+        return return_dict
 
     def get_normalised_bootstrapped_mean( self , reference_name ):
         
@@ -225,28 +224,12 @@ class Bootstrapit:
         total_average_dataset = {}
         for key, bootstrapped_data_1D_Array in reference_avg.items():
             total_average_dataset[key] = np.average(bootstrapped_data_1D_Array)
-        
-        #File export decisions
-        if self.fh.use_file and self.use_sem:
-            self.fh.save_dataset_and_sem_to_file( total_average_dataset          , 
-                                                  standard_error_mean    , 
-                                                  'bootstrapped__relative_average' )
-            return total_average_dataset, standard_error_mean
-            
-                                                  
-        elif self.fh.use_file and not self.use_sem:
-            self.fh.save_dataset_to_file( total_average_dataset          , 
-                                          'bootstrapped__relative_average' )
-            return total_average_dataset
+       
+        return_dict = {}
+        return_dict["normalised_mean"] = total_average_dataset
+        #return_dict["SEM_NORM_MEAN"]   = standard_error_mean
 
-        else:
-            
-            if self.use_sem:
-                return total_average_dataset, standard_error_mean
-            else:
-                return total_average_dataset
-
-        return total_average_dataset, standard_error_mean
+        return return_dict
            
 
 #Private methods

@@ -36,7 +36,7 @@ export_order_list        = ['Brown' , #First
                             'Green' , 
                             'Blue'  ] #Last
                             
-analysis_1.export(mean,median, filename = "bootstrapit_results.xlsx", order = export_order_list)
+analysis_1.export(mean, median, norm_mean, ranking, filename = "bootstrapit_results.xls", order = export_order_list)
 
 
 #simple barchart example ------------------------------------------------------
