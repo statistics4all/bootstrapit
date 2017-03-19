@@ -24,12 +24,12 @@ analysis_1.file_export_config( store_data            = False                ,
 analysis_1.use_sem = False
 
 # get mean --------------------------------------------------------------------
-analysis_1.get_bootstrapped_mean()
+mean  = analysis_1.get_bootstrapped_mean()
 
 
 
 
-
+print("p-val: ", analysis_1.get_p_value())
 
 
 

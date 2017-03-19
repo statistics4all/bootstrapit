@@ -16,6 +16,7 @@ from xlutils.copy import copy #replace with already installed package
 import os
 from file_handling import *
 from plotting import *
+import warnings
 
 
 #==============================================================================
@@ -40,10 +41,14 @@ class Bootstrapit:
                            export_file_type      = 'xls'                ,
                            export_directory_name = 'bootstrap_results'  ,
                            export_order           = []                  ):
-                               
+        
+        
+        warnings.warn("deprecated", DeprecationWarning)                       
         self.store_data     = store_data
         
+
         #Check if bootstrapit should export data
+        
         if self.store_data:
             self.use_directory    = True
             self.use_file         = True
@@ -230,7 +235,28 @@ class Bootstrapit:
         #return_dict["SEM_NORM_MEAN"]   = standard_error_mean
 
         return return_dict
-           
+     
+    def get_p_value(self):
+
+        #dictionary of bootstrapped means
+        true_mean_distr_dict = {}
+
+        #compute mean of original dataset
+        for key, values in self.original_data.items():
+            true_mean_distr_dict[key]  =  np.mean(values, axis=0)
+    
+        #get bootstrapped means
+        bs_mean_distr = self.__get_average_bootstrapped_data()
+
+        #number of bootstrapped elements
+        N = self.number_of_resamples
+
+        #bootstrap p-value according to Davison and Hinkley (1997) Bootstrap Methods and their Application, p. 141
+        p_val_dict = {}
+        for key, s_0 in true_mean_distr_dict.items():
+            p_val_dict[key] = ( 1 + np.sum( bs_mean_distr[key] >= s_0 ) ) / (N+1) 
+
+        return p_val_dict      
 
 #Private methods
 #----------------------------------------------------------------------------------------------------------
