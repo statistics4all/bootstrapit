@@ -14,12 +14,9 @@ analysis_1 = Bootstrapit('flicker.xlsx'                ,
                          number_of_resamples   = 10000 )
 
                             
-#add standard error of the mean to the results
-#Works only for get mean at the moment value not for referenced/normalised mean.
-analysis_1.use_sem = False #TODO: does not work at the moment
-
 # get mean --------------------------------------------------------------------
 mean  = analysis_1.get_bootstrapped_mean()
+SEM   = analysis_1.get_SEM()
 
 #get median -------------------------------------------------------------------
 median = analysis_1.get_bootstrapped_median() 

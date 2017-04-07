@@ -12,7 +12,6 @@ import itertools
 import csv
 import xlrd
 import xlwt
-from xlutils.copy import copy #replace with already installed package
 import os
 from file_handling import *
 from plotting import *
@@ -102,9 +101,20 @@ class Bootstrapit:
             averaged_data[key]  =  np.mean(values, axis=0)
         
         return_dict['mean'] = averaged_data    
-                 
-        standard_error_mean = self.__get_standard_error_of_the_mean()
-        return_dict['SEM'] = standard_error_mean         
+                
+        return return_dict
+
+    def get_SEM(self):
+        
+        return_dict = {}
+        sem_results = {}    
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
+            sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
+        
+        for key, bootstrapped_data_2D_Array in sem_results.items():
+            sem_results[key] = np.mean(bootstrapped_data_2D_Array)
+            
+        return_dict['SEM'] = sem_results
 
         return return_dict
                               
@@ -252,6 +262,7 @@ class Bootstrapit:
         N = self.number_of_resamples
 
         #bootstrap p-value according to Davison and Hinkley (1997) Bootstrap Methods and their Application, p. 141
+        #TODO: verify if this is a correct calculation of the p-value
         p_val_dict = {}
         for key, s_0 in true_mean_distr_dict.items():
             p_val_dict[key] = ( 1 + np.sum( bs_mean_distr[key] >= s_0 ) ) / (N+1) 
@@ -323,17 +334,6 @@ class Bootstrapit:
             median_bootstrapped_datasets[key] = np.median(bootstrapped_data_2D_Array, axis = 0)
             
         return median_bootstrapped_datasets
-
-    def __get_standard_error_of_the_mean(self):
-        
-        sem_results = {}    
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
-            sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
-        
-        for key, bootstrapped_data_2D_Array in sem_results.items():
-            sem_results[key] = np.mean(bootstrapped_data_2D_Array)
-            
-        return sem_results
   
     def __merge_dicts(self, *dict_args):
 
