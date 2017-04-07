@@ -44,7 +44,7 @@ plot_order = export_order_list
 #plot barcharts
 plot_barchart(mean  , plot_order, title = 'mean'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
 plot_barchart(median, plot_order, title = 'median', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
-plot_barchart(rank  , plot_order, title = 'rank'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+plot_barchart(ranking  , plot_order, title = 'rank'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
 
 
 
@@ -57,8 +57,8 @@ plot_barchart(rank  , plot_order, title = 'rank'  , xlabel = 'eye colour', ylabe
 #significance level configuration gives you an additional exported row which
 #shows you only the comparisons which are significant to your threshold
 #NOTE: THIS FEATURE IS EXPERIMENTAL
-analysis_1.use_significance_sort  = True
-analysis_1.significance_threshold = 0.95
-analysis_1.get_value_comparison_by_size() 
+# analysis_1.use_significance_sort  = True
+# analysis_1.significance_threshold = 0.95
+# analysis_1.get_value_comparison_by_size() 
 
 

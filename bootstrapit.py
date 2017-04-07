@@ -135,6 +135,8 @@ class Bootstrapit:
          
     def get_value_comparison_by_size( self ):
     
+        warnings.warn("Export of comparison by size does not work", RuntimeWarning)
+
         #get comparison smaller than all permutations
         averaged_bootstrapped\
             = self.__get_average_bootstrapped_data()
@@ -152,17 +154,16 @@ class Bootstrapit:
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
                 = np.float( np.sum( average_comparison ) )              \
                 / self.number_of_resamples
-                
-                
-
-    
+                  
         
         #TODO: ADD significant filtering to the export file.
     
-        if self.fh.use_file:      
-            self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
-                                            'comparison_by_size_results',
-                                            column_offset = 0                )            
+        if self.fh.use_file:
+            pass   
+            #TODO: here export   
+            # self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
+            #                                 'comparison_by_size_results',
+            #                                 column_offset = 0                )            
           
         #filter out the signifiant comparisons
         if self.use_significance_sort:
@@ -172,13 +173,16 @@ class Bootstrapit:
                     significant_comparison_probabilities[comparison] = probability
 
                           
-                        
-            if self.fh.use_file:      
-                self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
-                                                'comparison_by_size_results',
-                                                column_offset = 3           ,     
-                                                mode = 'edit') 
+            #TODO: here export         
+            # if self.fh.use_file:      
+                # self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
+                #                                 'comparison_by_size_results',
+                #                                 column_offset = 3           ,     
+                #                                 mode = 'edit') 
             
+
+
+
             return comparison_probabilities, significant_comparison_probabilities
     
         return comparison_probabilities
