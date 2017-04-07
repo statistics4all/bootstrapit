@@ -58,26 +58,6 @@ def hashtags(p):
         return "-"
 
 
-##plotting
-#tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),  
-#             (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),  
-#             (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),  
-#             (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),  
-#             (188, 189, 34), (219, 219, 141), (23, 190, 207), (158, 218, 229)]
-#             
-## Tableau Color Blind 10
-#tableau20blind = [(0, 107, 164), (255, 128, 14), (171, 171, 171), (89, 89, 89),
-#             (95, 158, 209), (200, 82, 0), (137, 137, 137), (163, 200, 236),
-#             (255, 188, 121), (207, 207, 207)]
-#  
-## Rescale to values between 0 and 1 
-#for i in range(len(tableau20)):  
-#    r, g, b = tableau20[i]  
-#    tableau20[i] = (r / 255., g / 255., b / 255.)
-#for i in range(len(tableau20blind)):  
-#    r, g, b = tableau20blind[i]  
-#    tableau20blind[i] = (r / 255., g / 255., b / 255.)
-
 
 def plot_barchart(dataset_dict, plot_order, title = '', xlabel = '', ylabel = ''):
     """
@@ -95,12 +75,7 @@ def plot_barchart(dataset_dict, plot_order, title = '', xlabel = '', ylabel = ''
         
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
-    
-#    # set color sequence using tableau20 colours
-#    my_colors = []
-#    for index in range(len(dataset)):
-#        my_colors.append(tableau20[index])
-    
+
     #plot barchart
     barchart = ax.bar( range( len(plot_order) ), data, align = 'center')#, color=my_colors)
     
@@ -143,12 +118,7 @@ def plot_barchart_experimental(dataset          ,
         
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
-    
-    # set color sequence using tableau20 colours
-    my_colors = []
-    for index in range(len(dataset)):
-        my_colors.append(tableau20[index])
-    
+
     #plot barchart
     barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
     
@@ -181,8 +151,6 @@ def plot_barchart_experimental(dataset          ,
 #this is only for experimental trials and not functional   
 def plot_barchart_sign(dataset, significance_dataset, plot_order):
     
-
-
         #inter group signifikance and in group significance  
     for key, probability in significance_dataset.items():
         compared_dataset_names = key.split(' < ')
