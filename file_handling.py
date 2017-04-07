@@ -11,6 +11,7 @@ from xlutils.copy import copy #replace with already installed package
 import openpyxl
 import os
 from enum import Enum
+import warnings
 
 
 class FileType(Enum):
@@ -82,7 +83,7 @@ class FileHandling:
             #when this fails there is possbily a empty cell
             except ValueError:
                 data_array = np.array([], dtype = np.float)
-                print ('Dataset contains empty cells, if this is ok go on')
+                warnings.warn('Dataset contains empty cells, if this is ok go on', RuntimeWarning)
                 for item in value:
                     #just add the elements which are not empty                
                     if item:                
@@ -293,61 +294,84 @@ class FileHandling:
         if not os.path.exists(self.directory_name):
             os.makedirs(self.directory_name)         
 
+    def export_comparison(self, data_dict):
+        if self.file_type  == FileType.CSV :
+            print ('csv file export')
+ 
+            self.__export_comparison_csv(data_dict, self.export_order, self.file_name )           
+                
+        elif self.file_type == FileType.XLS :
+            print ('xls file export')            
+            self.__export_comparison_xls(data_dict, self.export_order, self.file_name )
+                
+        elif self.file_type == FileType.XLSX:
+            print ('xlsx file export')
+            self.__export_comparison_xlsx(data_dict, self.export_order, self.file_name) 
+
+        else:
+            print ('ERROR: unknown export file type')
+            return -1
+
 
     #TODO: integrate in general save storage function
-    def save_unordered_dictionary_to_csv(self, dict, filename):
+    def __export_comparison_csv(self, data_dict, order_list, filename):
+        warnings.warn("This functionality is not implemented",RuntimeWarning)
+        #filename = self.check_filename_for_slashes(filename)
+        #filename = '.'.join((filename,'csv'))     
+        #filename = '_'.join((self.directory_name,filename)) 
+        #filename = self.check_filename_for_slashes(filename)
         
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'csv'))     
-        filename = '_'.join((self.directory_name,filename)) 
-        filename = self.check_filename_for_slashes(filename)
-        
-        if self.use_directory:
-            self.__create_folder()
-            filename = '/'.join((self.directory_name, filename))
+        #if self.use_directory:
+        #    self.__create_folder()
+        #    filename = '/'.join((self.directory_name, filename))
     
         
-        export_list = []
-        for key, value in dict.items():
-            export_list.append([key,value])
+        #export_list = []
+        #for key, value in dict.items():
+        #    export_list.append([key,value])
         
         
-        with open(filename, 'wb') as f:
-            dw = csv.writer(f)
-            dw.writerows(export_list)
+        #with open(filename, 'wb') as f:
+        #    dw = csv.writer(f)
+        #    dw.writerows(export_list)
 
-    def save_unordered_dictionary_to_xls(self, dict, filename, mode = 'create',column_offset = 0):
+    def __export_comparison_xls(self, data_dict, order_list, filename):
+        warnings.warn("This functionality is not implemented",RuntimeWarning)
         
-        filename = self.check_filename_for_slashes(filename)
-        filename = '.'.join((filename,'xls'))     
-        filename = '_'.join((self.directory_name,filename)) 
-        filename = self.check_filename_for_slashes(filename)
+        #filename = self.check_filename_for_slashes(filename)
+        #filename = '.'.join((filename,'xls'))     
+        #filename = '_'.join((self.directory_name,filename)) 
+        #filename = self.check_filename_for_slashes(filename)
         
-        if self.use_directory:
-            self.__create_folder()
-            filename = '/'.join((self.directory_name, filename))
+        #if self.use_directory:
+        #    self.__create_folder()
+        #    filename = '/'.join((self.directory_name, filename))
     
         
-        export_list = []
-        for key, value in dict.items():
-            export_list.append([key,value])
+        #export_list = []
+        #for key, value in dict.items():
+        #    export_list.append([key,value])
         
-        worksheetname = self.directory_name
-        worksheetname = self.check_filename_for_slashes(worksheetname)    
+        #worksheetname = self.directory_name
+        #worksheetname = self.check_filename_for_slashes(worksheetname)    
         
-        if mode == 'create':        
-            book  = xlwt.Workbook(encoding="utf-8")
-            sheet = book.add_sheet(worksheetname)
-        elif mode == 'edit':
-            rb    = xlrd.open_workbook(filename)
-            book  = copy(rb)  #TODO: exchange xlutils.copy with another standard anaconda library
-            sheet = book.get_sheet(0)
-        else:
-            "Ooops: This xls mode is not known, sorry!!!"            
+        #if mode == 'create':        
+        #    book  = xlwt.Workbook(encoding="utf-8")
+        #    sheet = book.add_sheet(worksheetname)
+        #elif mode == 'edit':
+        #    rb    = xlrd.open_workbook(filename)
+        #    book  = copy(rb)  #TODO: exchange xlutils.copy with another standard anaconda library
+        #    sheet = book.get_sheet(0)
+        #else:
+        #    "Ooops: This xls mode is not known, sorry!!!"            
         
-        for i, l in enumerate(export_list):
-            for j, col in enumerate(l):
-                sheet.write(i, j+column_offset, col)
+        #for i, l in enumerate(export_list):
+        #    for j, col in enumerate(l):
+        #        sheet.write(i, j+column_offset, col)
         
-        book.save(filename)
+        #book.save(filename)
+
+
+    def __export_comparison_xlsx(self, data_dict, order_list, filename):
+        warnings.warn("This functionality is not implemented",RuntimeWarning)
 

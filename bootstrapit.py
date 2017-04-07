@@ -12,10 +12,10 @@ import itertools
 import csv
 import xlrd
 import xlwt
-from xlutils.copy import copy #replace with already installed package
 import os
 from file_handling import *
 from plotting import *
+import warnings
 
 
 #==============================================================================
@@ -40,10 +40,14 @@ class Bootstrapit:
                            export_file_type      = 'xls'                ,
                            export_directory_name = 'bootstrap_results'  ,
                            export_order           = []                  ):
-                               
+        
+        
+        warnings.warn("deprecated", DeprecationWarning)                       
         self.store_data     = store_data
         
+
         #Check if bootstrapit should export data
+        
         if self.store_data:
             self.use_directory    = True
             self.use_file         = True
@@ -97,9 +101,20 @@ class Bootstrapit:
             averaged_data[key]  =  np.mean(values, axis=0)
         
         return_dict['mean'] = averaged_data    
-                 
-        standard_error_mean = self.__get_standard_error_of_the_mean()
-        return_dict['SEM'] = standard_error_mean         
+                
+        return return_dict
+
+    def get_SEM(self):
+        
+        return_dict = {}
+        sem_results = {}    
+        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
+            sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
+        
+        for key, bootstrapped_data_2D_Array in sem_results.items():
+            sem_results[key] = np.mean(bootstrapped_data_2D_Array)
+            
+        return_dict['SEM'] = sem_results
 
         return return_dict
                               
@@ -120,6 +135,8 @@ class Bootstrapit:
          
     def get_value_comparison_by_size( self ):
     
+        warnings.warn("Export of comparison by size does not work", RuntimeWarning)
+
         #get comparison smaller than all permutations
         averaged_bootstrapped\
             = self.__get_average_bootstrapped_data()
@@ -137,17 +154,16 @@ class Bootstrapit:
             comparison_probabilities[' < '.join(dataset_name_sequence)] \
                 = np.float( np.sum( average_comparison ) )              \
                 / self.number_of_resamples
-                
-                
-
-    
+                  
         
         #TODO: ADD significant filtering to the export file.
     
-        if self.fh.use_file:      
-            self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
-                                            'comparison_by_size_results',
-                                            column_offset = 0                )            
+        if self.fh.use_file:
+            pass   
+            #TODO: here export   
+            # self.fh.save_unordered_dictionary_to_xls(comparison_probabilities, 
+            #                                 'comparison_by_size_results',
+            #                                 column_offset = 0                )            
           
         #filter out the signifiant comparisons
         if self.use_significance_sort:
@@ -157,13 +173,16 @@ class Bootstrapit:
                     significant_comparison_probabilities[comparison] = probability
 
                           
-                        
-            if self.fh.use_file:      
-                self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
-                                                'comparison_by_size_results',
-                                                column_offset = 3           ,     
-                                                mode = 'edit') 
+            #TODO: here export         
+            # if self.fh.use_file:      
+                # self.fh.save_unordered_dictionary_to_xls(significant_comparison_probabilities, 
+                #                                 'comparison_by_size_results',
+                #                                 column_offset = 3           ,     
+                #                                 mode = 'edit') 
             
+
+
+
             return comparison_probabilities, significant_comparison_probabilities
     
         return comparison_probabilities
@@ -230,7 +249,29 @@ class Bootstrapit:
         #return_dict["SEM_NORM_MEAN"]   = standard_error_mean
 
         return return_dict
-           
+     
+    def get_p_value(self):
+
+        #dictionary of bootstrapped means
+        true_mean_distr_dict = {}
+
+        #compute mean of original dataset
+        for key, values in self.original_data.items():
+            true_mean_distr_dict[key]  =  np.mean(values, axis=0)
+    
+        #get bootstrapped means
+        bs_mean_distr = self.__get_average_bootstrapped_data()
+
+        #number of bootstrapped elements
+        N = self.number_of_resamples
+
+        #bootstrap p-value according to Davison and Hinkley (1997) Bootstrap Methods and their Application, p. 141
+        #TODO: verify if this is a correct calculation of the p-value
+        p_val_dict = {}
+        for key, s_0 in true_mean_distr_dict.items():
+            p_val_dict[key] = ( 1 + np.sum( bs_mean_distr[key] >= s_0 ) ) / (N+1) 
+
+        return p_val_dict      
 
 #Private methods
 #----------------------------------------------------------------------------------------------------------
@@ -297,17 +338,6 @@ class Bootstrapit:
             median_bootstrapped_datasets[key] = np.median(bootstrapped_data_2D_Array, axis = 0)
             
         return median_bootstrapped_datasets
-
-    def __get_standard_error_of_the_mean(self):
-        
-        sem_results = {}    
-        for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():
-            sem_results[key] = stats.sem(bootstrapped_data_2D_Array)
-        
-        for key, bootstrapped_data_2D_Array in sem_results.items():
-            sem_results[key] = np.mean(bootstrapped_data_2D_Array)
-            
-        return sem_results
   
     def __merge_dicts(self, *dict_args):
 
