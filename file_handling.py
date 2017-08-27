@@ -7,7 +7,7 @@ import itertools
 import csv
 import xlrd
 import xlwt
-from xlutils.copy import copy #replace with already installed package
+#from xlutils.copy import copy #replace with already installed package --> use pandas for import export
 import openpyxl
 import os
 from enum import Enum
@@ -23,8 +23,6 @@ class FileType(Enum):
 class FileHandling:
     def __init__(self):
         
-        self.use_directory       = True
-        self.use_file            = True
         self.directory_name      = 'bootstrapit_results'
         self.file_type           = FileType.XLSX
         self.file_name           = 'bootstrapit_results'      

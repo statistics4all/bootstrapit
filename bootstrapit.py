@@ -9,15 +9,12 @@ import scipy.stats as spst
 from scipy import stats
 import matplotlib.pyplot as plt
 import itertools
-import csv
-import xlrd
-import xlwt
-import os
 from file_handling import *
 from plotting import *
 import warnings
 
 
+#TODO: Redo everything with pandas
 #==============================================================================
 # Bootstrapping
 #==============================================================================
@@ -25,6 +22,27 @@ import warnings
 class Bootstrapit:
     def __init__(self, filename, number_of_resamples = 10000):
 
+         
+        #TODO: replace these variables with properties
+#              @property
+#              def x(self):
+#                  return self.__x
+#          
+#              @x.setter
+#              def x(self, x):
+#                  if x < 0:
+#                      self.__x = 0
+#                  elif x > 1000:
+#                      self.__x = 1000
+#                  else:
+#                      self.__x = x
+#        
+        
+        
+        
+        
+        
+        
         self.number_of_resamples    = number_of_resamples
         self.bootstrapped_data      = {}
         self.use_sem                = False

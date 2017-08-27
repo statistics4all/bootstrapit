@@ -1,16 +1,6 @@
-import numpy as np
-import scipy as sp
-import scipy.stats as spst
-from scipy import stats
 import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 
-import itertools
-import csv
-import xlrd
-import xlwt
-from xlutils.copy import copy #replace with already installed package
-import os
 
 #==============================================================================
 # plotting FIXME: Just sketching the functionality has to be changed for

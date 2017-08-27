@@ -10,8 +10,7 @@ from bootstrapit import *
 Example: The effect of iris colour in critical flicker frequency (CFF)
 """
 
-analysis_1 = Bootstrapit('flicker.xlsx'                , 
-                         number_of_resamples   = 10000 )
+analysis_1 = Bootstrapit('flicker.xlsx', number_of_resamples   = 10000 )
 
                             
 # get mean --------------------------------------------------------------------
@@ -41,6 +40,8 @@ analysis_1.export(mean, median, norm_mean, ranking, filename = "bootstrapit_resu
 # set plot order the same as export order
 plot_order = export_order_list
 
+
+#FIXME: plotting with order of import, plot_order should be optional
 #plot barcharts
 plot_barchart(mean  , plot_order, title = 'mean'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
 plot_barchart(median, plot_order, title = 'median', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
