@@ -9,83 +9,32 @@ import scipy.stats as spst
 from scipy import stats
 import matplotlib.pyplot as plt
 import itertools
+
+from Bootstrapper import Bootstrapper
 from file_handling import *
 from plotting import *
 import warnings
+from math import isnan
 
-
-#TODO: Redo everything with pandas
 #==============================================================================
 # Bootstrapping
 #==============================================================================
 
 class Bootstrapit:
+
+
     def __init__(self, filename, number_of_resamples = 10000):
-
          
-        #TODO: replace these variables with properties
-#              @property
-#              def x(self):
-#                  return self.__x
-#          
-#              @x.setter
-#              def x(self, x):
-#                  if x < 0:
-#                      self.__x = 0
-#                  elif x > 1000:
-#                      self.__x = 1000
-#                  else:
-#                      self.__x = x
-#        
-        
-        
-        
-        
-        
-        
-        self.number_of_resamples    = number_of_resamples
-        self.bootstrapped_data      = {}
-        self.use_sem                = False
-        self.use_significance_sort  = False
-        self.significance_threshold = 0.05
+        self.number_of_resamples = number_of_resamples
+        self.significance_threshold = 0.05 
       
-        self.fh  = FileHandling()
-        self.original_data, self.export_order = self.fh.import_spreadsheet(filename)
-        self.bootstrapped_data   = self.__get_resampled_datasets(self.original_data)
- 
-    def file_export_config(self                                         ,
-                           store_data            = True                 ,
-                           export_file_type      = 'xls'                ,
-                           export_directory_name = 'bootstrap_results'  ,
-                           export_order           = []                  ):
-        
-        
-        warnings.warn("deprecated", DeprecationWarning)                       
-        self.store_data     = store_data
-        
+        #import dataset from file
+        self.__fh = FileHandling()
+        self.original_data_dict = self.__fh.import_spreadsheet(filename)
 
-        #Check if bootstrapit should export data
-        
-        if self.store_data:
-            self.use_directory    = True
-            self.use_file         = True
-            self.fh.use_directory = self.use_directory
-            self.fh.use_file      = self.use_file 
-        else:
-            self.use_directory    = False
-            self.use_file         = False
-            self.fh.use_directory = self.use_directory
-            self.fh.use_file      = self.use_file 
-            
-        self.file_type            = export_file_type
-        self.directory_name       = export_directory_name
-        self.fh.file_type         = self.file_type
-        self.fh.directory_name    = self.directory_name 
-        
-        if not export_order:        
-            self.fh.export_order      = self.export_order
-        else:
-            self.fh.export_order      = export_order               
+        #resample dataset
+        self.__bootstrapper = Bootstrapper(self.original_data_dict, number_of_resamples)
+
     
     def export(self, *export_datasets_dicts, filename = "bootstrapit_results.xlsx", order = []):
         
@@ -96,17 +45,16 @@ class Bootstrapit:
         filename       = filetype_check[0]
         
         if filetype == "xlsx":
-            self.fh.file_type = FileType.XLSX
+            self.__fh.file_type = FileType.XLSX
         elif filetype == "xls":
-            self.fh.file_type = FileType.XLS
+            self.__fh.file_type = FileType.XLS
         elif filetype == "csv":
-            self.fh.file_type = FileType.CSV
+            self.__fh.file_type = FileType.CSV
         else:
             print("Error: Unsupported file type.")
 
-        self.fh.file_name    = filename
-        self.fh.export_order = order
-        self.fh.export(merged_dict)
+        self.__fh.file_name    = filename
+        self.__fh.export(merged_dict)
             
     def get_bootstrapped_mean( self ):
         
@@ -328,18 +276,10 @@ class Bootstrapit:
             
         return averaged_rank_bootstrapped_dataset
 
-    def __get_resampled_datasets(self, dataset):
-        self.bootstrapped_datasets = {}
-    
-        #loop efficiently through dictionary iterating one item at the time --> scalability for large datasets
-        for key, data in dataset.items():
-            self.bootstrapped_datasets[key] = data[ np.int_( np.floor( sp.rand( len(data), self.number_of_resamples ) * len(data) ))]
-        
-        return self.bootstrapped_datasets
 
     def __get_average_bootstrapped_data(self):
         
-        #average all created bootstrap datasets for each dataset along FIXME: insert here axis!!!!! leaving you with a 1D-Array
+        #average all created bootstrap datasets for each dataset along 
         averaged_bootstrapped_datasets = {}
     
         for key, bootstrapped_data_2D_Array in self.bootstrapped_data.items():

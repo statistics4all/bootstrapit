@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import scipy as sp
 import scipy.stats as spst
 from scipy import stats
@@ -35,62 +36,36 @@ class FileHandling:
                
         filetype_check = filename.split('.')
         filetype       = filetype_check[-1]
-
-        
-                   
+                 
         if filetype == 'csv':
-            row_list = self.__parse_csv(filename)
+            dataset_df = pd.read_csv(filename)
         
         elif (filetype == 'xls') or (filetype == 'xlsx'):
-            row_list = self.__parse_xls_xlsx(filename)
+            dataset_df = pd.read_excel(filename)
         
         else:
             print ('ERROR: wrong file type')
             return -1
+        
+        #set data order
+        self.export_order = list(dataset_df.columns.values)
+        
+        #return dataset as dictionary
+        return self.__df_to_dict(dataset_df)  
 
-        if self.__column_or_row_ordered(row_list) == 'error':
-            print ('ERROR: something is wrong with your spreadsheet layout')
-            return -1
+    def __df_to_dict(self, df):
+        data_dict = df.to_dict()
         
-        elif self.__column_or_row_ordered(row_list) == 'row':
-            transposed_list = [list(x) for x in zip(*row_list)]        
-            list_order      = transposed_list[0]
-        
-        elif self.__column_or_row_ordered(row_list) == 'column':
-            #transpose the lists
-            list_order  = row_list[0]          
-            row_list    = [list(x) for x in zip(*row_list)]
-               
-        else:
-            print ('ERROR: something is wrong with your spreadsheet layout')
-            return -1
-            
-        
-        #change list to dictionary with first row as keys        
-        datasets = {}
-        for column in row_list:
-            datasets[column[0]] = column[1:]
-    
-        new_dataset = {}
-        for key, value in datasets.items():
-            
-            #try to convert list to numpy float array        
-            try:
-                new_dataset[key] =  np.asarray(value, dtype=np.float)
-            
-            #when this fails there is possbily a empty cell
-            except ValueError:
-                data_array = np.array([], dtype = np.float)
-                warnings.warn('Dataset contains empty cells, if this is ok go on', RuntimeWarning)
-                for item in value:
-                    #just add the elements which are not empty                
-                    if item:                
-                        data_array = np.append(data_array, item)
-                        
-                new_dataset[key] = data_array
-        
-        #return dataset as dictionary and list order as list
-        return new_dataset, list_order  
+        #delete pandas dataframe index and nan values from dictionary
+        data_dict_reshaped  = {}
+        for key in data_dict:
+             array = np.array([])
+             for index in data_dict[key]:
+                  if not np.isnan(data_dict[key][index]):
+                      array = np.append(array, data_dict[key][index])
+             data_dict_reshaped[key] = array
+                                        
+        return data_dict_reshaped
 
     def __column_or_row_ordered(self, row_list):
     
@@ -103,35 +78,6 @@ class FileHandling:
         
         else:
             return 'error'
-
-    def __parse_xls_xlsx(self, filename):
-    
-        book  = xlrd.open_workbook(filename)
-        sheet = book.sheet_by_index(0)
-        
-        row_list = []
-        for row_ind in range(sheet.nrows):
-            row_values = sheet.row_values(row_ind)
-            row_list.append(row_values)
-        
-        return row_list
-
-    def __parse_csv(self, filename):
-        with open(filename) as csvfile:
-                
-                #check what delimiters the file uses
-                dialect = csv.Sniffer().sniff( csvfile.read(1024) )
-                
-                #seek to the beginning of the file
-                csvfile.seek(0)
-                
-                #read all rows and append them to a list  
-                reader = csv.reader(csvfile,dialect)
-                row_list = []
-                for row in reader:
-                    row_list.append(row)
-                
-        return row_list
 
 
 #export methods 
@@ -146,18 +92,45 @@ class FileHandling:
         elif self.file_type == FileType.XLS :
             print ('xls file export')
             #filename = '_'.join((self.directory_name,function_name))               
-            self.__export_xls(data_dict, self.export_order, self.file_name )
+            self.__export_excel(data_dict, self.export_order, self.file_name, "xls") 
                 
         elif self.file_type == FileType.XLSX:
-            print ('xlsx file export')
-            #filename = '_'.join((self.directory_name,function_name)) 
-            self.__export_xlsx(data_dict, self.export_order, self.file_name) 
+            print ('xlsx file export') 
+            self.__export_excel(data_dict, self.export_order, self.file_name, "xlsx") 
 
         else:
             print ('ERROR: unknown export file type')
             return -1
+    
+    def __export_excel(self, data_dict, order_list, filename, file_ending):
+         
+        filepath = self.__get_export_filepath(filename, file_ending) 
+         
+        df = self.__get_export_dataframe(data_dict, order_list)
+         
+        #export to excel
+        writer = pd.ExcelWriter(filepath)
+        df.to_excel(writer, sheet_name = "Bootstrapped")
+        writer.save()
 
     def __export_csv(self, data_dict, order_list, filename):
+         
+         filepath = self.__get_export_filepath(filename, "csv")
+         df = self.__get_export_dataframe(data_dict, order_list)
+         df.to_csv(filepath)
+         
+         
+    def __get_export_dataframe(self, data_dict, order_list):
+        
+        #dict to dataframe
+        df = pd.DataFrame(data_dict)
+         
+        #reorder index and return df
+        return df.reindex(order_list)
+         
+         
+         
+    def __export_csv_old(self, data_dict, order_list, filename):
         
             csv_export_list     = []
             filepath = self.__get_export_filepath(filename, 'csv')
@@ -189,88 +162,6 @@ class FileHandling:
                     else:
                         writer.writerow ( csv_export_list )
                                               
-    def __export_xls(self, data_dict, order_list , filename):
-    
-        xls_export_list     = []
-        filepath = self.__get_export_filepath(filename, 'xls')
-                       
-        #start first row with parameters
-        export_header = order_list.copy()
-        export_header.insert(0, "Parameter")
-
-        #open xls file and write data
-        worksheetname = self.directory_name
-        worksheetname = self.__check_filename_for_slashes(worksheetname)    
-        
-        book = xlwt.Workbook(encoding="utf-8")
-        sheet = book.add_sheet(worksheetname)
-        excell_list = []
-        excell_list.append(export_header)
-
-
-        for parameter, dictionary in data_dict.items():
-            xls_export_list = []
-            xls_export_list.append(parameter)
-
-            #write dictionaries to list for easier export
-            for name in order_list:
-                xls_export_list.append(dictionary[name])
-      
-            #check if there are more than one value in list to export
-            if xls_export_list[1].size > 1:
-                xls_export_list = [list(x) for x in zip(*xls_export_list)] 
-    
-            excell_list.append(xls_export_list)
- 
-        for i, l in enumerate(excell_list):
-            for j, col in enumerate(l):
-                sheet.write(i, j, col)
-        
-        book.save(filepath)
-    
-    def __export_xlsx(self, data_dict, order_list , filename):
-    
-            xlsx_export_list     = []
-            filepath = self.__get_export_filepath(filename, 'xlsx')
-                       
-            #start first row with parameters
-            export_header = order_list.copy()
-            export_header.insert(0, "Parameter")
-
-            #open xlsx file and write data
-            worksheetname = self.directory_name
-            worksheetname = self.__check_filename_for_slashes(worksheetname)    
-        
-            #create xlsx workbook
-            book        = openpyxl.Workbook(encoding="utf-8")
-            sheet       = book.active
-            sheet.title = worksheetname
-
-            #initalise header parameter
-            excell_list = []
-            excell_list.append(export_header)
-
-
-            for parameter, dictionary in data_dict.items():
-                xls_export_list = []
-                xls_export_list.append(parameter)
-
-                #write dictionaries to list for easier export
-                for name in order_list:
-                    xls_export_list.append(dictionary[name])
-      
-                #check if there are more than one value in list to export
-                if xls_export_list[1].size > 1:
-                    xls_export_list = [list(x) for x in zip(*xls_export_list)] 
-    
-                excell_list.append(xls_export_list)
- 
-            for i, l in enumerate(excell_list):
-                for col, value in enumerate(l):
-                    sheet.cell(row=i+1, column=col+1).value = value
-                    
-                            
-            book.save(filepath)
 
     def __get_export_filepath(self, filename, file_extension):
         #add file type to file name string
@@ -278,9 +169,8 @@ class FileHandling:
         filename = '.'.join((filename, file_extension))    
             
         #combine filename to a full file path
-        if self.use_directory:
-             self.__create_folder()
-             filename = '/'.join((self.directory_name, filename))  
+        self.__create_folder()
+        filename = '/'.join((self.directory_name, filename))  
 
         return filename
 

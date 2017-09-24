@@ -4,10 +4,6 @@ from file_handling import *
 analysis_1 = Bootstrapit('flicker.xlsx'               , 
                          number_of_resamples   = 10000 )
 
-
-export_order_list        = ['Brown' , #First
-                            'Green' , 
-                            'Blue'  ] #Last
                             
                             
 analysis_1.file_export_config( store_data            = False                ,

@@ -14,7 +14,7 @@ analysis_1 = Bootstrapit('flicker.xlsx', number_of_resamples   = 10000 )
 
                             
 # get mean --------------------------------------------------------------------
-mean  = analysis_1.get_bootstrapped_mean()
+mean  = analysis_1.get_bootstrapped_mean() 
 SEM   = analysis_1.get_SEM()
 
 #get median -------------------------------------------------------------------
@@ -26,14 +26,10 @@ norm_mean = analysis_1.get_normalised_bootstrapped_mean( reference_name = 'Brown
 #get ranking ------------------------------------------------------------------
 ranking = analysis_1.get_ranking()
  
-#File export 
-
-export_order_list        = ['Brown' , #First
-                            'Green' , 
-                            'Blue'  ] #Last
                             
-analysis_1.export(mean, median, norm_mean, ranking, filename = "bootstrapit_results.xls", order = export_order_list)
-
+analysis_1.export(mean, filename = "bootstrapit_results.xlsx")
+analysis_1.export(mean, filename = "bootstrapit_results.xls")
+analysis_1.export(mean, filename = "bootstrapit_results.csv")
 
 #simple barchart example ------------------------------------------------------
 
