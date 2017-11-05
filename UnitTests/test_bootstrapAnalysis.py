@@ -32,25 +32,12 @@ class TestBootstrapAnalysis(TestCase):
         key_count = 0
         key_list = []
         for key in mean_dict:
-            mean_data_dict = mean_dict[key]
-            for key, values in mean_data_dict.items():
+            result_dict = mean_dict[key]
+            for key, values in result_dict.items():
                 print(key)
                 key_list.append(key)
                 key_count+= 1
 
         self.assertEqual(3, key_count)
         self.assertTrue(sorted(["Brown", "Green", "Blue"]) == sorted(key_list))
-
-
-        def getshape(d):
-            if isinstance(d, dict):
-                return {k: getshape(d[k]) for k in d}
-            else:
-                # Replace all non-dict values with None.
-                return None
-
-        def shape_equal(d1, d2):
-            return getshape(d1) == getshape(d2)
-
-
 

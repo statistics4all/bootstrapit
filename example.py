@@ -14,7 +14,7 @@ analysis_1 = Bootstrapit('flicker.xlsx', number_of_resamples   = 10000 )
 
                             
 # get mean --------------------------------------------------------------------
-mean  = analysis_1.get_bootstrapped_mean() 
+mean  = analysis_1.mean()
 SEM   = analysis_1.get_SEM()
 
 #get median -------------------------------------------------------------------

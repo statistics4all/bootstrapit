@@ -26,7 +26,7 @@ class Bootstrapit:
         :param number_of_resamples: The number of resamples to perform.
         """
         self.number_of_resamples = number_of_resamples
-        self.bootstrapAnalysis = BootstrapAnalysis()
+
 
         # import dataset from file
         self.__fh = FileHandling()
@@ -75,3 +75,6 @@ class Bootstrapit:
         for dictionary in dict_args:
             result.update(dictionary)
         return result
+
+    def mean(self):
+        return self.__analysis.get_bootstrapped_mean()
