@@ -11,6 +11,7 @@ import warnings
 from bootstrapper import Bootstrapper
 from file_handling import FileHandling, FileType
 from bootstrap_analysis import BootstrapAnalysis
+from plotting import Plotting
 
 
 class Bootstrapit:
@@ -27,7 +28,6 @@ class Bootstrapit:
         """
         self.number_of_resamples = number_of_resamples
 
-
         # import dataset from file
         self.__fh = FileHandling()
         self.original_data_dict = self.__fh.import_spreadsheet(filename)
@@ -38,7 +38,10 @@ class Bootstrapit:
         #init bootstrap analysis tools
         self.__analysis = BootstrapAnalysis(self.__bootstrapper)
 
-    # TODO: Export bootstrapped data array
+        #init plotter
+        self.__plotter = Plotting(self.__fh.export_order)
+
+    # TODO: Export bootstrapped data array to json or excel
     def export(self, *export_datasets_dicts, filename="bootstrapit_results.xlsx"):
 
         """
@@ -78,3 +81,6 @@ class Bootstrapit:
 
     def mean(self):
         return self.__analysis.get_bootstrapped_mean()
+
+    def barchart(self, data_dict, title, xlabel, ylabel):
+        self.__plotter.plot_barchart(data_dict, title, xlabel, ylabel)

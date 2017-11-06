@@ -15,33 +15,13 @@ analysis_1 = Bootstrapit('flicker.xlsx', number_of_resamples   = 10000 )
                             
 # get mean --------------------------------------------------------------------
 mean  = analysis_1.mean()
-SEM   = analysis_1.get_SEM()
+analysis_1.export(mean, filename = "bootstrapit_results_mean.xlsx")
 
-#get median -------------------------------------------------------------------
-median = analysis_1.get_bootstrapped_median() 
-
-# get relative mean -----------------------------------------------------------
-norm_mean = analysis_1.get_normalised_bootstrapped_mean( reference_name = 'Brown' )
-
-#get ranking ------------------------------------------------------------------
-ranking = analysis_1.get_ranking()
- 
-                            
-analysis_1.export(mean, filename = "bootstrapit_results.xlsx")
-analysis_1.export(mean, filename = "bootstrapit_results.xls")
-analysis_1.export(mean, filename = "bootstrapit_results.csv")
 
 #simple barchart example ------------------------------------------------------
-
-# set plot order the same as export order
-plot_order = export_order_list
-
-
 #FIXME: plotting with order of import, plot_order should be optional
 #plot barcharts
-plot_barchart(mean  , plot_order, title = 'mean'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
-plot_barchart(median, plot_order, title = 'median', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
-plot_barchart(ranking  , plot_order, title = 'rank'  , xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+analysis_1.barchart(mean, title = 'mean', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
 
 
 
