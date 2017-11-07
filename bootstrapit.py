@@ -82,5 +82,8 @@ class Bootstrapit:
     def mean(self):
         return self.__analysis.get_bootstrapped_mean()
 
+    def SEM(self):
+        return self.__analysis.get_SEM()
+
     def barchart(self, data_dict, title, xlabel, ylabel):
         self.__plotter.plot_barchart(data_dict, title, xlabel, ylabel)

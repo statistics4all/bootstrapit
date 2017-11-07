@@ -41,3 +41,5 @@ class TestBootstrapAnalysis(TestCase):
         self.assertEqual(3, key_count)
         self.assertTrue(sorted(["Brown", "Green", "Blue"]) == sorted(key_list))
 
+    def test_SEM(self):
+        self.fail("Not tested yet")

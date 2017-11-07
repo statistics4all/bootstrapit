@@ -8,12 +8,12 @@ class Plotting():
         self.SPACE = ' '
         self.plot_order = plot_order
 
-    def plot_barchart(self, dataset_dict, title = '', xlabel = '', ylabel = '', sem = False):
+    def plot_barchart(self, dataset_dict, title = '', xlabel = '', ylabel = '', SEM = False):
         """
         Barchart plots the input dataset dictionary according to the key order in
         the input plot_order variable. It also plots the value of the specific key
         above the center of the corresponding bar.
-        :type sem: If True,  Standard Error of the mean will be added to the barchart.
+        :type sem: If True,  Standard Error of the Mean will be added to the barchart.
         """
 
         data = self.__set_plot_order(dataset_dict)
