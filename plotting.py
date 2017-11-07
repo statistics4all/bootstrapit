@@ -8,11 +8,12 @@ class Plotting():
         self.SPACE = ' '
         self.plot_order = plot_order
 
-    def plot_barchart(self, dataset_dict, title = '', xlabel = '', ylabel = ''):
+    def plot_barchart(self, dataset_dict, title = '', xlabel = '', ylabel = '', sem = False):
         """
         Barchart plots the input dataset dictionary according to the key order in
         the input plot_order variable. It also plots the value of the specific key
         above the center of the corresponding bar.
+        :type sem: If True,  Standard Error of the mean will be added to the barchart.
         """
 
         data = self.__set_plot_order(dataset_dict)
@@ -30,41 +31,6 @@ class Plotting():
         self.__set_barchart_value_labels(ax, barchart)
 
         plt.show()
-
-    def plot_barchart_experimental(self, dataset,plot_order,comparisons = []):
-        """
-        Barchart plots the input dataset dictionary according to the key order in
-        the input plot_order variable. It also plots the value of the specific key
-        above the center of the corresponding bar.
-        """
-
-        #sort according to plot_order
-        data = []
-        for name in plot_order:
-            data.append(dataset.get(name))
-
-        fig = plt.figure(facecolor='white')
-        ax = fig.add_subplot(111)
-
-        #plot barchart
-        barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
-
-        # TODO: alignment looks to irregular, search for different solution
-        plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
-
-        #set axis labels
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-        #add value label to each bar
-        for rect in barchart:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
-                '%0.3f' % height,
-                ha='center', va='bottom')
-
-
-        #take the comparison statistic
 
     #this is only for experimental trials and not functional
     def plot_barchart_sign(self, dataset, significance_dataset, plot_order):
