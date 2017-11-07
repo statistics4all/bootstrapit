@@ -15,34 +15,19 @@ class Plotting():
         above the center of the corresponding bar.
         """
 
-        #sort according to plot_order
-        data = []
-        for key in dataset_dict:
+        data = self.__set_plot_order(dataset_dict)
 
-            for name in self.plot_order:
-                data.append(dataset_dict[key].get(name))
-
+        #set-up figure
         fig = plt.figure(facecolor='white')
         ax = fig.add_subplot(111)
 
-        #plot barchart
+        #get barchart
         barchart = ax.bar( range( len(self.plot_order) ), data, align = 'center')#, color=my_colors)
 
-        # TODO: alignment looks to irregular, search for different solution
+        #set labels
         plt.xticks(range(len(self.plot_order)), self.plot_order, rotation = 45)
-
-        #set axis labels
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-
-        #add value label to each bar
-        for rect in barchart:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
-                '%0.3f' % height,
-                ha='center', va='bottom')
+        self.__set_axis_labels(ax, title, xlabel, ylabel)
+        self.__set_barchart_value_labels(ax, barchart)
 
         plt.show()
 
@@ -175,6 +160,15 @@ class Plotting():
         else:
             return "-"
 
+    def __set_plot_order(self, dataset_dict):
+
+        #sort according to plot_order
+        data = []
+        for key in dataset_dict:
+            for name in self.plot_order:
+                data.append(dataset_dict[key].get(name))
+        return data
+
     def __find_name_position(self, name):
         for group_index, item in enumerate(group_list):
             for index, element in enumerate(item):
@@ -194,3 +188,23 @@ class Plotting():
 
 
 #value_label(bar)
+
+    def __set_axis_labels(self, ax, title, xlabel, ylabel):
+        """
+        Sets the labels of the Matplotlib Axes object.
+        """
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+
+    def __set_barchart_value_labels(self, ax, barchart):
+
+        """
+        Adds a label of the height of the barchart to the center of the bar.
+        :param ax: the matplotlib axes object.
+        :param barchart: A bar element.
+        """
+        for rect in barchart:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., height * 0.5, '%0.3f' % height,
+                    ha='center', va='bottom')
