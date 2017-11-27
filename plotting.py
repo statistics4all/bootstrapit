@@ -36,6 +36,7 @@ class Plotting():
         self.__set_barchart_value_labels(ax, barchart)
 
         plt.show()
+        return plt
 
     #this is only for experimental trials and not functional
     def plot_barchart_sign(self, dataset, significance_dataset, plot_order):
@@ -179,8 +180,3 @@ class Plotting():
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2., height * 0.5, '%0.3f' % height,
                     ha='center', va='bottom')
-
-    def __errobardict_to_list(self, errorbar, plot_order):
-
-        first_key = list(errorbar)[0]
-        return errorbar[first_key].items()

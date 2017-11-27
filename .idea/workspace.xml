@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a9f78791-3cad-4c56-b021-21e8bf97a5af" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrapit_results/bootstrapit_results_mean.xlsx" afterPath="$PROJECT_DIR$/bootstrapit_results/bootstrapit_results_mean.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrapit.py" afterPath="$PROJECT_DIR$/bootstrapit.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.py" afterPath="$PROJECT_DIR$/example.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plotting.py" afterPath="$PROJECT_DIR$/plotting.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +18,8 @@
       <file leaf-file-name="example.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+            <state relative-caret-position="280">
+              <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -30,16 +28,15 @@
       <file leaf-file-name="plotting.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plotting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="156">
-              <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+            <state relative-caret-position="964">
+              <caret line="38" column="18" lean-forward="false" selection-start-line="38" selection-start-column="18" selection-end-line="38" selection-end-column="18" />
               <folding>
-                <element signature="e#1515#4452#0" expanded="false" />
-                <element signature="e#4520#4678#0" expanded="false" />
-                <element signature="e#4753#5257#0" expanded="false" />
-                <element signature="e#5295#5799#0" expanded="false" />
-                <element signature="e#6106#6380#0" expanded="false" />
-                <element signature="e#6457#6723#0" expanded="false" />
-                <element signature="e#6791#7175#0" expanded="false" />
+                <element signature="e#1534#4471#0" expanded="false" />
+                <element signature="e#4772#5276#0" expanded="false" />
+                <element signature="e#5314#5818#0" expanded="false" />
+                <element signature="e#6125#6399#0" expanded="false" />
+                <element signature="e#6476#6742#0" expanded="false" />
+                <element signature="e#6810#7194#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -48,13 +45,14 @@
       <file leaf-file-name="bootstrapit.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bootstrapit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="820">
-              <caret line="88" column="57" lean-forward="true" selection-start-line="88" selection-start-column="57" selection-end-line="88" selection-end-column="57" />
+            <state relative-caret-position="632">
+              <caret line="90" column="0" lean-forward="true" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
               <folding>
                 <element signature="e#72#90#0" expanded="true" />
                 <element signature="e#1502#2346#0" expanded="false" />
                 <element signature="e#2398#2717#0" expanded="false" />
                 <element signature="e#2747#2793#0" expanded="false" />
+                <element signature="e#2914#2970#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -112,9 +110,9 @@
         <option value="$PROJECT_DIR$/UnitTests/test_bootstrapit.py" />
         <option value="$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py" />
         <option value="$PROJECT_DIR$/devtest .py" />
-        <option value="$PROJECT_DIR$/bootstrapit.py" />
         <option value="$PROJECT_DIR$/example.py" />
         <option value="$PROJECT_DIR$/plotting.py" />
+        <option value="$PROJECT_DIR$/bootstrapit.py" />
       </list>
     </option>
   </component>
@@ -374,13 +372,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/plotting.py</url>
-          <line>28</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -388,7 +379,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="46" />
+      <option name="time" value="47" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -441,6 +432,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -507,6 +499,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -579,6 +572,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -620,6 +614,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -633,6 +628,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -675,6 +671,7 @@
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -817,39 +814,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/plotting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="964">
+          <caret line="38" column="18" lean-forward="false" selection-start-line="38" selection-start-column="18" selection-end-line="38" selection-end-column="18" />
+          <folding>
+            <element signature="e#1534#4471#0" expanded="false" />
+            <element signature="e#4772#5276#0" expanded="false" />
+            <element signature="e#5314#5818#0" expanded="false" />
+            <element signature="e#6125#6399#0" expanded="false" />
+            <element signature="e#6476#6742#0" expanded="false" />
+            <element signature="e#6810#7194#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bootstrapit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="88" column="57" lean-forward="true" selection-start-line="88" selection-start-column="57" selection-end-line="88" selection-end-column="57" />
+        <state relative-caret-position="632">
+          <caret line="90" column="0" lean-forward="true" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
           <folding>
             <element signature="e#72#90#0" expanded="true" />
             <element signature="e#1502#2346#0" expanded="false" />
             <element signature="e#2398#2717#0" expanded="false" />
             <element signature="e#2747#2793#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plotting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding>
-            <element signature="e#1515#4452#0" expanded="false" />
-            <element signature="e#4520#4678#0" expanded="false" />
-            <element signature="e#4753#5257#0" expanded="false" />
-            <element signature="e#5295#5799#0" expanded="false" />
-            <element signature="e#6106#6380#0" expanded="false" />
-            <element signature="e#6457#6723#0" expanded="false" />
-            <element signature="e#6791#7175#0" expanded="false" />
+            <element signature="e#2914#2970#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        <state relative-caret-position="280">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding />
         </state>
       </provider>
