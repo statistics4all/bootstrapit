@@ -18,11 +18,15 @@ mean = analysis_1.mean()
 SEM = analysis_1.SEM()
 analysis_1.export(mean, filename = "bootstrapit_results_mean.xlsx")
 
-print(SEM)
 
-#plot barcharts
-analysis_1.barchart(mean, title = 'mean', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+#plot barchart
+analysis_1.barchart(mean)
 
+#plot barchart with errorbar
+analysis_1.barchart(mean, SEM)
+
+#add labels
+#title = 'mean', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)'
 
 
 

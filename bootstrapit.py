@@ -85,5 +85,8 @@ class Bootstrapit:
     def SEM(self):
         return self.__analysis.get_SEM()
 
-    def barchart(self, data_dict, title, xlabel, ylabel):
-        self.__plotter.plot_barchart(data_dict, title, xlabel, ylabel)
+    def barchart(self, data_dict, errorbar = {}):
+        self.__plotter.plot_barchart(data_dict, errorbar)
+
+    def set_axis_label(self, title, xlabel, ylabel):
+        self.__plotter.set_axis_labels(title, xlabel, ylabel)

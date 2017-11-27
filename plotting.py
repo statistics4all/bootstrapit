@@ -8,13 +8,14 @@ class Plotting():
         self.SPACE = ' '
         self.plot_order = plot_order
 
-    #TODO: add SEM functionality to the plot, check if sem dict can be included in dataset_dict!
-    def plot_barchart(self, dataset_dict, SEM_dict = {}, title = '', xlabel = '', ylabel = '', SEM = False):
+
+    def plot_barchart(self, dataset_dict, errorbar = {}):
         """
         Barchart plots the input dataset dictionary according to the key order in
         the input plot_order variable. It also plots the value of the specific key
         above the center of the corresponding bar.
-        :type sem: If True,  Standard Error of the Mean will be added to the barchart.
+        :param dataset_dict: The dictionary of your dataset (e.g. mean)
+        :param errorbar: A dictionary containing errors (e.g. SEM) corresponding to the dataset.
         """
 
         data = self.__set_plot_order(dataset_dict)
@@ -24,14 +25,14 @@ class Plotting():
         ax = fig.add_subplot(111)
 
         #get barchart
-        if SEM:
-            barchart = ax.bar(range(len(self.plot_order)), data, align='center', yerr = )
+        if errorbar:
+            errobar_list = self.__set_plot_order(errorbar)
+            barchart = ax.bar(range(len(self.plot_order)), data, align='center', yerr = errobar_list)
         else:
             barchart = ax.bar( range( len(self.plot_order) ), data, align = 'center')
 
         #set labels
         plt.xticks(range(len(self.plot_order)), self.plot_order, rotation = 45)
-        self.__set_axis_labels(ax, title, xlabel, ylabel)
         self.__set_barchart_value_labels(ax, barchart)
 
         plt.show()
@@ -88,6 +89,14 @@ class Plotting():
                         ha='center', va='bottom')
 
                     label_select_counter = label_select_counter + 1
+
+    def set_axis_labels(self, ax, title, xlabel, ylabel):
+        """
+        Sets the labels of the Matplotlib Axes object.
+        """
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
 
 
     """
@@ -159,14 +168,6 @@ class Plotting():
 
 #value_label(bar)
 
-    def __set_axis_labels(self, ax, title, xlabel, ylabel):
-        """
-        Sets the labels of the Matplotlib Axes object.
-        """
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
     def __set_barchart_value_labels(self, ax, barchart):
 
         """
@@ -178,3 +179,8 @@ class Plotting():
             height = rect.get_height()
             ax.text(rect.get_x() + rect.get_width() / 2., height * 0.5, '%0.3f' % height,
                     ha='center', va='bottom')
+
+    def __errobardict_to_list(self, errorbar, plot_order):
+
+        first_key = list(errorbar)[0]
+        return errorbar[first_key].items()
