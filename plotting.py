@@ -9,7 +9,7 @@ class Plotting():
         self.plot_order = plot_order
 
 
-    def plot_barchart(self, dataset_dict, errorbar = {}):
+    def plot_barchart(self, figure, dataset_dict, errorbar = {}):
         """
         Barchart plots the input dataset dictionary according to the key order in
         the input plot_order variable. It also plots the value of the specific key
@@ -21,8 +21,8 @@ class Plotting():
         data = self.__set_plot_order(dataset_dict)
 
         #set-up figure
-        fig = plt.figure(facecolor='white')
-        ax = fig.add_subplot(111)
+        #fig = plt.figure(facecolor='white')
+        ax = figure.add_subplot(111)
 
         #get barchart
         if errorbar:
@@ -34,9 +34,7 @@ class Plotting():
         #set labels
         plt.xticks(range(len(self.plot_order)), self.plot_order, rotation = 45)
         self.__set_barchart_value_labels(ax, barchart)
-
-        plt.show()
-        return plt
+        return ax
 
     #this is only for experimental trials and not functional
     def plot_barchart_sign(self, dataset, significance_dataset, plot_order):
