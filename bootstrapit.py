@@ -82,6 +82,9 @@ class Bootstrapit:
     def mean(self):
         return self.__analysis.get_bootstrapped_mean()
 
+    def median(self):
+        return self.__analysis.get_bootstrapped_median()
+
     def SEM(self):
         return self.__analysis.get_SEM()
 
