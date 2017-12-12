@@ -46,6 +46,10 @@ class TestBootstrapAnalysis(TestCase):
         self.assertTrue(sorted(["Brown", "Green", "Blue"]) == sorted(key_list))
 
     def test_median_dictionary_keys(self):
+        """
+        Tests if the correct number of keys (experiment column names) is contained in the result dict and
+        if the contained keys are identical to the column names.
+        """
         median_dict = self.analysis.get_bootstrapped_median()
         key_list, key_count = self.check_keys_in_dict(median_dict)
 
@@ -53,4 +57,12 @@ class TestBootstrapAnalysis(TestCase):
         self.assertTrue(sorted(["Brown", "Green", "Blue"]) == sorted(key_list))
 
     def test_SEM(self):
-        self.fail("Not tested yet")
+        """
+        Tests if the correct number of keys (experiment column names) is contained in the result dict and
+        if the contained keys are identical to the column names.
+        """
+        sem_dict = self.analysis.get_bootstrapped_median()
+        key_list, key_count = self.check_keys_in_dict(sem_dict)
+
+        self.assertEqual(3, key_count)
+        self.assertTrue(sorted(["Brown", "Green", "Blue"]) == sorted(key_list))

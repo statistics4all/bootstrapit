@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a9f78791-3cad-4c56-b021-21e8bf97a5af" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrapit_results/bootstrapit_results_mean.xlsx" afterPath="$PROJECT_DIR$/bootstrapit_results/bootstrapit_results_mean.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py" afterPath="$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bootstrapit.py" afterPath="$PROJECT_DIR$/bootstrapit.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,7 +28,7 @@
       <file leaf-file-name="plotting.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plotting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="783">
+            <state relative-caret-position="-27">
               <caret line="29" column="85" lean-forward="false" selection-start-line="29" selection-start-column="81" selection-end-line="29" selection-end-column="85" />
               <folding>
                 <element signature="e#1525#4462#0" expanded="false" />
@@ -45,11 +42,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrapit.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bootstrapit.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bootstrapit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="85" column="56" lean-forward="false" selection-start-line="85" selection-start-column="56" selection-end-line="85" selection-end-column="56" />
+            <state relative-caret-position="-113">
+              <caret line="43" column="59" lean-forward="true" selection-start-line="43" selection-start-column="59" selection-end-line="43" selection-end-column="59" />
               <folding>
                 <element signature="e#72#90#0" expanded="true" />
                 <element signature="e#585#1348#0" expanded="false" />
@@ -64,8 +61,8 @@
       <file leaf-file-name="bootstrap_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bootstrap_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="38" column="67" lean-forward="true" selection-start-line="38" selection-start-column="67" selection-end-line="38" selection-end-column="67" />
+            <state relative-caret-position="181">
+              <caret line="132" column="78" lean-forward="true" selection-start-line="132" selection-start-column="78" selection-end-line="132" selection-end-column="78" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
                 <element signature="e#290#836#0" expanded="false" />
@@ -76,13 +73,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_bootstrapAnalysis.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test_bootstrapAnalysis.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-710">
-              <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+            <state relative-caret-position="370">
+              <caret line="58" column="5" lean-forward="false" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#732#1010#0" expanded="false" />
+                <element signature="e#1061#1490#0" expanded="false" />
+                <element signature="e#1543#1978#0" expanded="false" />
+                <element signature="e#2012#2441#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -113,8 +114,8 @@
         <option value="$PROJECT_DIR$/devtest .py" />
         <option value="$PROJECT_DIR$/plotting.py" />
         <option value="$PROJECT_DIR$/example.py" />
-        <option value="$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py" />
         <option value="$PROJECT_DIR$/bootstrapit.py" />
+        <option value="$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py" />
       </list>
     </option>
   </component>
@@ -175,7 +176,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis">
+  <component name="RunManager" selected="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM">
     <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -189,6 +190,21 @@
       <option name="_new_regexPattern" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_bootstrapAnalysis.TestBootstrapAnalysis&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+    </configuration>
+    <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/UnitTests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="bootstrapit" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
     </configuration>
     <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
@@ -221,21 +237,6 @@
       <option name="_new_target" value="&quot;test_bootstrapit.TestBootstrapit&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
     </configuration>
-    <configuration name="Nosetests for test_bootstrapit.TestBootstrapit.test_export_single_result_dict" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/UnitTests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="bootstrapit" />
-      <option name="_new_regexPattern" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_bootstrapit.TestBootstrapit.test_export_single_result_dict&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-    </configuration>
     <configuration name="example" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -257,16 +258,16 @@
       <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis" />
       <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapit.TestBootstrapit" />
       <item index="2" class="java.lang.String" itemvalue="Python.example" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapit.TestBootstrapit.test_export_single_result_dict" />
-      <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" />
-        <item index="2" class="java.lang.String" itemvalue="Python.example" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapit.TestBootstrapit" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapit.TestBootstrapit.test_export_single_result_dict" />
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" />
+        <item index="3" class="java.lang.String" itemvalue="Python.example" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests for test_bootstrapit.TestBootstrapit" />
       </list>
     </recent_temporary>
   </component>
@@ -293,11 +294,11 @@
     <history-entry file="Nosetests_for_test_bootstrapAnalysis_TestBootstrapAnalysis - 2017.12.12 at 17h 46m 57s.xml">
       <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis" configurationId="tests" />
     </history-entry>
+    <history-entry file="Nosetests_for_test_bootstrapAnalysis_TestBootstrapAnalysis_test_SEM - 2017.12.12 at 18h 01m 30s.xml">
+      <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_SEM" configurationId="tests" />
+    </history-entry>
     <history-entry file="Nosetests_for_test_bootstrapAnalysis_TestBootstrapAnalysis_test_mean_dictionary_keys - 2017.12.12 at 17h 46m 00s.xml">
       <configuration name="Nosetests for test_bootstrapAnalysis.TestBootstrapAnalysis.test_mean_dictionary_keys" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_for_test_bootstrapit_TestBootstrapit_test_export_single_result_dict - 2017.11.06 at 17h 41m 23s.xml">
-      <configuration name="Nosetests for test_bootstrapit.TestBootstrapit.test_export_single_result_dict" configurationId="tests" />
     </history-entry>
     <history-entry file="Nosetests_for_test_bootstrapit_TestBootstrapit_test_export_single_result_dict - 2017.11.06 at 17h 43m 09s.xml">
       <configuration name="Nosetests for test_bootstrapit.TestBootstrapit.test_export_single_result_dict" configurationId="tests" />
@@ -391,6 +392,10 @@
           <caret line="30" column="85" lean-forward="false" selection-start-line="30" selection-start-column="85" selection-end-line="30" selection-end-column="85" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#732#1010#0" expanded="false" />
+            <element signature="e#1061#1490#0" expanded="false" />
+            <element signature="e#1543#1978#0" expanded="false" />
+            <element signature="e#2012#2441#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -452,6 +457,10 @@
           <caret line="30" column="85" lean-forward="false" selection-start-line="30" selection-start-column="85" selection-end-line="30" selection-end-column="85" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#732#1010#0" expanded="false" />
+            <element signature="e#1061#1490#0" expanded="false" />
+            <element signature="e#1543#1978#0" expanded="false" />
+            <element signature="e#2012#2441#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -513,6 +522,10 @@
           <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#732#1010#0" expanded="false" />
+            <element signature="e#1061#1490#0" expanded="false" />
+            <element signature="e#1543#1978#0" expanded="false" />
+            <element signature="e#2012#2441#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -794,9 +807,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="26" column="11" lean-forward="false" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+          <folding>
+            <element signature="e#73#98#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bootstrapit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-113">
+          <caret line="43" column="59" lean-forward="true" selection-start-line="43" selection-start-column="59" selection-end-line="43" selection-end-column="59" />
+          <folding>
+            <element signature="e#72#90#0" expanded="true" />
+            <element signature="e#585#1348#0" expanded="false" />
+            <element signature="e#1502#2346#0" expanded="false" />
+            <element signature="e#2398#2717#0" expanded="false" />
+            <element signature="e#2825#2873#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/plotting.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="783">
+        <state relative-caret-position="-27">
           <caret line="29" column="85" lean-forward="false" selection-start-line="29" selection-start-column="81" selection-end-line="29" selection-end-column="85" />
           <folding>
             <element signature="e#1525#4462#0" expanded="false" />
@@ -809,30 +846,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="26" column="11" lean-forward="false" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
-          <folding>
-            <element signature="e#73#98#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-710">
-          <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bootstrap_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="38" column="67" lean-forward="true" selection-start-line="38" selection-start-column="67" selection-end-line="38" selection-end-column="67" />
+        <state relative-caret-position="181">
+          <caret line="132" column="78" lean-forward="true" selection-start-line="132" selection-start-column="78" selection-end-line="132" selection-end-column="78" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
             <element signature="e#290#836#0" expanded="false" />
@@ -842,16 +859,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bootstrapit.py">
+    <entry file="file://$PROJECT_DIR$/UnitTests/test_bootstrapAnalysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="85" column="56" lean-forward="false" selection-start-line="85" selection-start-column="56" selection-end-line="85" selection-end-column="56" />
+        <state relative-caret-position="370">
+          <caret line="58" column="5" lean-forward="false" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
           <folding>
-            <element signature="e#72#90#0" expanded="true" />
-            <element signature="e#585#1348#0" expanded="false" />
-            <element signature="e#1502#2346#0" expanded="false" />
-            <element signature="e#2398#2717#0" expanded="false" />
-            <element signature="e#2825#2873#0" expanded="false" />
+            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#732#1010#0" expanded="false" />
+            <element signature="e#1061#1490#0" expanded="false" />
+            <element signature="e#1543#1978#0" expanded="false" />
+            <element signature="e#2012#2441#0" expanded="false" />
           </folding>
         </state>
       </provider>
