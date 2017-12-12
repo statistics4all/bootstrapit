@@ -8,78 +8,33 @@ class Plotting():
         self.SPACE = ' '
         self.plot_order = plot_order
 
-    def plot_barchart(self, dataset_dict, title = '', xlabel = '', ylabel = ''):
+
+    def plot_barchart(self, figure, dataset_dict, errorbar = {}):
         """
         Barchart plots the input dataset dictionary according to the key order in
         the input plot_order variable. It also plots the value of the specific key
         above the center of the corresponding bar.
+        :param dataset_dict: The dictionary of your dataset (e.g. mean)
+        :param errorbar: A dictionary containing errors (e.g. SEM) corresponding to the dataset.
         """
 
-        #sort according to plot_order
-        data = []
-        for key in dataset_dict:
+        data = self.__set_plot_order(dataset_dict)
 
-            for name in self.plot_order:
-                data.append(dataset_dict[key].get(name))
+        #set-up figure
+        #fig = plt.figure(facecolor='white')
+        ax = figure.add_subplot(111)
 
-        fig = plt.figure(facecolor='white')
-        ax = fig.add_subplot(111)
+        #get barchart
+        if errorbar:
+            errobar_list = self.__set_plot_order(errorbar)
+            barchart = ax.bar(range(len(self.plot_order)), data, align='center', yerr = errobar_list)
+        else:
+            barchart = ax.bar( range( len(self.plot_order) ), data, align = 'center')
 
-        #plot barchart
-        barchart = ax.bar( range( len(self.plot_order) ), data, align = 'center')#, color=my_colors)
-
-        # TODO: alignment looks to irregular, search for different solution
+        #set labels
         plt.xticks(range(len(self.plot_order)), self.plot_order, rotation = 45)
-
-        #set axis labels
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-
-        #add value label to each bar
-        for rect in barchart:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
-                '%0.3f' % height,
-                ha='center', va='bottom')
-
-        plt.show()
-
-    def plot_barchart_experimental(self, dataset,plot_order,comparisons = []):
-        """
-        Barchart plots the input dataset dictionary according to the key order in
-        the input plot_order variable. It also plots the value of the specific key
-        above the center of the corresponding bar.
-        """
-
-        #sort according to plot_order
-        data = []
-        for name in plot_order:
-            data.append(dataset.get(name))
-
-        fig = plt.figure(facecolor='white')
-        ax = fig.add_subplot(111)
-
-        #plot barchart
-        barchart = ax.bar( range( len(dataset) ), data, align = 'center', color=my_colors)
-
-        # TODO: alignment looks to irregular, search for different solution
-        plt.xticks( range( len(dataset) ) , plot_order, rotation = 45)
-
-        #set axis labels
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-
-        #add value label to each bar
-        for rect in barchart:
-            height = rect.get_height()
-            ax.text(rect.get_x() + rect.get_width()/2., height * 0.5 ,
-                '%0.3f' % height,
-                ha='center', va='bottom')
-
-
-        #take the comparison statistic
+        self.__set_barchart_value_labels(ax, barchart)
+        return ax
 
     #this is only for experimental trials and not functional
     def plot_barchart_sign(self, dataset, significance_dataset, plot_order):
@@ -134,6 +89,14 @@ class Plotting():
 
                     label_select_counter = label_select_counter + 1
 
+    def set_axis_labels(self, ax, title, xlabel, ylabel):
+        """
+        Sets the labels of the Matplotlib Axes object.
+        """
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+
 
     """
     Private Functions
@@ -175,6 +138,15 @@ class Plotting():
         else:
             return "-"
 
+    def __set_plot_order(self, dataset_dict):
+
+        #sort according to plot_order
+        data = []
+        for key in dataset_dict:
+            for name in self.plot_order:
+                data.append(dataset_dict[key].get(name))
+        return data
+
     def __find_name_position(self, name):
         for group_index, item in enumerate(group_list):
             for index, element in enumerate(item):
@@ -194,3 +166,15 @@ class Plotting():
 
 
 #value_label(bar)
+
+    def __set_barchart_value_labels(self, ax, barchart):
+
+        """
+        Adds a label of the height of the barchart to the center of the bar.
+        :param ax: the matplotlib axes object.
+        :param barchart: A bar element.
+        """
+        for rect in barchart:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., height * 0.5, '%0.3f' % height,
+                    ha='center', va='bottom')

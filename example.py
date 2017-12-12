@@ -5,6 +5,7 @@
 """
 
 from bootstrapit import *
+import matplotlib.pyplot as plt
 
 """
 Example: The effect of iris colour in critical flicker frequency (CFF)
@@ -13,29 +14,30 @@ Example: The effect of iris colour in critical flicker frequency (CFF)
 analysis_1 = Bootstrapit('flicker.xlsx', number_of_resamples   = 10000 )
 
                             
-# get mean --------------------------------------------------------------------
-mean  = analysis_1.mean()
+# get mean and the standard error of the mean
+mean = analysis_1.mean()
+SEM = analysis_1.SEM()
 analysis_1.export(mean, filename = "bootstrapit_results_mean.xlsx")
 
 
-#simple barchart example ------------------------------------------------------
-#FIXME: plotting with order of import, plot_order should be optional
-#plot barcharts
-analysis_1.barchart(mean, title = 'mean', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)' )
+#plot barchart
+figure = plt.figure(1, facecolor='white')
+plot = analysis_1.barchart(figure, mean)
+
+#add labels
+analysis_1.set_axis_label(plot, title = 'mean', xlabel = 'eye colour', ylabel = 'CFF (cycles/s)')
+plt.tight_layout()
+plt.show()
+
+#plot barchart with errorbar
+figure = plt.figure(2, facecolor='white')
+analysis_1.barchart(figure, mean, SEM)
+plt.tight_layout()
+plt.show()
 
 
 
-#==============================================================================
-# Experimental Code
-#==============================================================================
 
-# Compare the different mouse groups and compute the probabilites
 
-#significance level configuration gives you an additional exported row which
-#shows you only the comparisons which are significant to your threshold
-#NOTE: THIS FEATURE IS EXPERIMENTAL
-# analysis_1.use_significance_sort  = True
-# analysis_1.significance_threshold = 0.95
-# analysis_1.get_value_comparison_by_size() 
 
 
