@@ -13,6 +13,8 @@ from file_handling import FileHandling, FileType
 from bootstrap_analysis import BootstrapAnalysis
 from plotting import Plotting
 
+import seaborn as sns
+
 
 class Bootstrapit:
     """
@@ -79,9 +81,15 @@ class Bootstrapit:
             result.update(dictionary)
         return result
 
+    #TODO: Naming is not really accurate
+    def sample_means(self):
+        return self.__analysis.get_bootstrapped_data_average(self.__bootstrapper.bootstrapped_data)
+
+    # TODO: Naming is not really accurate
     def mean(self):
         return self.__analysis.get_bootstrapped_mean()
 
+    # TODO: Naming is not really accurate
     def median(self):
         return self.__analysis.get_bootstrapped_median()
 
@@ -90,6 +98,22 @@ class Bootstrapit:
 
     def barchart(self, figure, data_dict, errorbar = {}):
         return self.__plotter.plot_barchart(figure, data_dict, errorbar)
+
+    def plot_two_sided_ci(self, dataset_dict, alpha):
+
+        #get colorpalett from seaborn
+
+        palette = itertools.cycle(sns.color_palette())
+
+        for dataset_key in dataset_dict:
+            data = np.asarray(sorted(dataset_dict[dataset_key]))
+
+            #compute two sided ci for symmetric distributions
+            dataL, dataU = self.__analysis.basic_two_sided_ci(data, alpha)
+            self.__plotter.plot_bootstrap_histogram(data)
+            self.__plotter.plot_ci_lines(dataL, dataU, color=next(palette)) #TODO: go trough color cycle of seaborn
+
+        #TODO: add ci to dictionary and return the list in the end
 
 
     def set_axis_label(self, axes, title, xlabel, ylabel):

@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
+import seaborn as sns
+sns.set(color_codes=True)
+import numpy as np
 
 
 # FIXME: Just sketching the functionality has to be changed for a nicer API
@@ -7,6 +10,15 @@ class Plotting():
     def __init__(self, plot_order):
         self.SPACE = ' '
         self.plot_order = plot_order
+
+    def plot_ci_lines(self, L, U, color="b"):
+        plt.axvline(x=L, linestyle='--', color=color)
+        plt.axvline(x=U, linestyle='--', color=color)
+
+    def plot_bootstrap_histogram(self, data):
+            sns.distplot(data)
+
+
 
 
     def plot_barchart(self, figure, dataset_dict, errorbar = {}):

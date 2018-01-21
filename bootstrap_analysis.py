@@ -8,6 +8,21 @@ class BootstrapAnalysis:
         self.__bootstrapper = bootstrapper
         self.__bootstrapped_data = self.__bootstrapper.bootstrapped_data
 
+    def get_bootstrapped_data_average(self, bootstrapped_data):
+        """
+        Go through dictionary of categories and compute for each resample of each category the
+        mean value across rows of the 2D-resampling-array (axis = 0).
+        :param bootstrapped_data: resampling dictionary
+        :return: dictionary containing the averaged resamplings of each category.
+        """
+        averaged_bootstrapped_datasets = {}
+
+        for key, bootstrapped_data_2D_Array in bootstrapped_data.items():
+            averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis=0)
+
+        return averaged_bootstrapped_datasets
+
+
     def get_bootstrapped_mean(self):
         """
         The get_bootstrapped_mean method gets the mean of each dataset item averaged over each bootstrap sample.
@@ -15,7 +30,7 @@ class BootstrapAnalysis:
         """
         return_dict = {}
         averaged_data = {}
-        averaged_bootstrapped = self.__get_average_bootstrapped_data(self.__bootstrapped_data)
+        averaged_bootstrapped = self.get_bootstrapped_data_average(self.__bootstrapped_data)
 
         for key, values in averaged_bootstrapped.items():
             averaged_data[key] = np.mean(values, axis=0)
@@ -57,6 +72,33 @@ class BootstrapAnalysis:
 
         return_dict['median'] = median_data
         return return_dict
+
+    def get_limit(self, data, limit):
+        # check if limits lie between samples
+        if not limit.is_integer():
+            lValue = data[np.floor(limit)]
+            uValue = data[np.ceil(limit)]
+            limit = (lValue + uValue) / 2
+        else:
+            limit = data[limit]
+
+        return limit
+
+    def get_two_sided_limits(self, data, alpha):
+        # define interval limits
+        n = len(data)
+        L = n * alpha / 2  # introduces floating point errors
+        U = n - L
+        L = self.get_limit(data, L)
+        U = self.get_limit(data, U)
+        return L, U
+
+    def basic_two_sided_ci(self, data, alpha):
+        # check if limits lie between samples
+        L, U = self.get_two_sided_limits(data, alpha)
+        return L, U
+
+
 
     def __get_value_comparison_by_size(self):
 
@@ -215,19 +257,7 @@ class BootstrapAnalysis:
 
     #private functions
 
-    def __get_average_bootstrapped_data(self, bootstrapped_data):
-        """
-        Go through dictionary of categories and compute for each resample of each category the
-        mean value across rows of the 2D-resampling-array (axis = 0).
-        :param bootstrapped_data: resampling dictionary
-        :return: dictionary containing the averaged resamplings of each category.
-        """
-        averaged_bootstrapped_datasets = {}
 
-        for key, bootstrapped_data_2D_Array in bootstrapped_data.items():
-            averaged_bootstrapped_datasets[key] = np.average(bootstrapped_data_2D_Array, axis=0)
-
-        return averaged_bootstrapped_datasets
 
     def __get_median_bootstrapped_data(self, bootstrapped_data):
         """
