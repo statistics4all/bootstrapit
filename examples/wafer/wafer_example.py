@@ -32,9 +32,14 @@ mean_dict = mean["mean"]
 #plot distribution
 alpha = 0.05
 figure = plt.figure(99, facecolor='white')
+#analysis_1.plot_distr(sample_means)
 analysis_1.plot_two_sided_ci(sample_means, alpha)
 plt.axvline(x=mean_dict["Wafer 1"], linestyle='-', color='r')
 plt.axvline(x=mean_dict["Wafer 2"], linestyle='-', color='r')
+plt.title("Distributions of the bootstrap sample means")
+plt.xlabel("voltage (V)")
+plt.ylabel("count")
+plt.tight_layout()
 sns.plt.show()
 
 

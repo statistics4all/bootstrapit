@@ -99,6 +99,12 @@ class Bootstrapit:
     def barchart(self, figure, data_dict, errorbar = {}):
         return self.__plotter.plot_barchart(figure, data_dict, errorbar)
 
+
+    def plot_distr(self, dataset_dict):
+        for dataset_key in dataset_dict:
+            data = np.asarray(sorted(dataset_dict[dataset_key]))
+            self.__plotter.plot_bootstrap_histogram(data)
+
     def plot_two_sided_ci(self, dataset_dict, alpha):
 
         #get colorpalett from seaborn
